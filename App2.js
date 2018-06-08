@@ -1,82 +1,31 @@
-import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
-import React from 'react';
-import {
-  ActivityIndicator,
-  AsyncStorage,
-  StatusBar,
-  StyleSheet,
-  View,
-  Button,
-} from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, Button, AsyncStorage } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
+import IosColor from './colors.js';
+import CarsStack from './CarsScreen.js'
 
-class AuthLoadingScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this._bootstrapAsync();
-  }
-
-  // Fetch the token from storage then navigate to our appropriate place
-  _bootstrapAsync = async () => {
-    const userToken = await AsyncStorage.getItem('userToken');
-
-
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
-    this.props.navigation.navigate(userToken ? 'App' : 'Auth');
-  };
-
-  // Render any loading content that you like here
+class ReservationsScreen extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator />
-        <StatusBar barStyle="default" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Reservations!</Text>
       </View>
     );
   }
 }
 
-class SignInScreen extends React.Component {
-
+class MapScreen extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Button title="Sign in!" onPress={this._signInAsync} />
-        <Button title="Sign up!" onPress={this._signUpAsync} />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Map!</Text>
       </View>
     );
   }
-
-  _signInAsync = async () => {
-    await AsyncStorage.setItem('userToken', 'abc');
-    this.props.navigation.navigate('App');
-  };
-
-  _signUpAsync = async () => {
-    this.props.navigation.push('SignUp')
-  };
 }
 
-class SignUpScreen extends React.Component {
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Button title="Back" onPress={this._goBack} />
-      </View>
-    );
-  }
-
-  _goBack = async () => {
-    this.props.navigation.goBack();
-  };
-}
-
-class HomeScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Welcome to the app!',
-  };
-
+class MoreScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -96,36 +45,39 @@ class HomeScreen extends React.Component {
   };
 }
 
-const AppStack = createStackNavigator({ Home: HomeScreen });
-const AuthStack = createStackNavigator(
+export default createBottomTabNavigator(
   {
-    SignIn: SignInScreen,
-    SignUp: SignUpScreen,
+    Cars: CarsStack,
+    Reservations: ReservationsScreen,
+    Map: MapScreen,
+    More: MoreScreen,
   },
   {
-    headerMode: 'none',
-    mode: 'modal',
-    navigationOptions: {
-      gesturesEnabled: true,
+    navigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, tintColor }) => {
+        const { routeName } = navigation.state;
+        let iconName;
+        if (routeName === 'Cars') {
+          iconName = `ios-car${focused ? '' : '-outline'}`;
+        } else if (routeName === 'Reservations') {
+          iconName = `ios-list-box${focused ? '' : '-outline'}`;
+        } else if (routeName === 'Map') {
+          iconName = `ios-navigate${focused ? '' : '-outline'}`;
+        } else if (routeName === 'More') {
+          iconName = `ios-more${focused ? '' : '-outline'}`;
+        }
+
+        // You can return any component that you like here! We usually use an
+        // icon component from react-native-vector-icons
+        return <Ionicons name={iconName} size={25} color={tintColor} />;
+      },
+    }),
+    tabBarOptions: {
+      activeTintColor: IosColor.Blue,
+      inactiveTintColor: IosColor.LightGray,
+      labelStyle: {
+        fontSize: 12,
+      },
     },
   }
 );
-
-export default createSwitchNavigator(
-  {
-    AuthLoading: AuthLoadingScreen,
-    App: AppStack,
-    Auth: AuthStack,
-  },
-  {
-    initialRouteName: 'AuthLoading',
-  }
-);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-})

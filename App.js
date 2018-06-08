@@ -1,79 +1,73 @@
-import React, { Component } from 'react';
-import { Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createBottomTabNavigator } from 'react-navigation';
-import IosColor from './colors.js';
+import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
+import React from 'react';
+import {
+  ActivityIndicator,
+  AsyncStorage,
+  StatusBar,
+  StyleSheet,
+  View,
+  Button,
+} from 'react-native';
 
-class CarsScreen extends Component {
+import styles from './styles.js'
+import SignInScreen from './SignInScreen.js'
+import AuthLoadingScreen from './AuthLoadingScreen.js'
+import SignUpScreen from './SignUpScreen.js'
+import App2 from './App2.js'
+
+class HomeScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Welcome to the app!',
+  };
+
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Cars!</Text>
+      <View style={styles.container}>
+        <Button title="Show me more of the app" onPress={this._showMoreApp} />
+        <Button title="Actually, sign me out :)" onPress={this._signOutAsync} />
       </View>
     );
   }
+
+  _showMoreApp = () => {
+    this.props.navigation.navigate('Other');
+  };
+
+  _signOutAsync = async () => {
+    await AsyncStorage.clear();
+    this.props.navigation.navigate('Auth');
+  };
 }
 
-class ReservationsScreen extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Reservations!</Text>
-      </View>
-    );
-  }
-}
-
-class MapScreen extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Map!</Text>
-      </View>
-    );
-  }
-}
-
-class MoreScreen extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>More!</Text>
-      </View>
-    );
-  }
-}
-
-export default createBottomTabNavigator(
+const AppStack = createStackNavigator(
+  { Home: App2 },
   {
-    Cars: CarsScreen,
-    Reservations: ReservationsScreen,
-    Map: MapScreen,
-    More: MoreScreen,
+    navigationOptions: {
+      title: 'Car Rental'
+    }
+  },
+);
+const AuthStack = createStackNavigator(
+  {
+    SignIn: SignInScreen,
+    SignUp: SignUpScreen,
   },
   {
-    navigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, tintColor }) => {
-        const { routeName } = navigation.state;
-        let iconName;
-        if (routeName === 'Cars') {
-          iconName = `ios-car${focused ? '' : '-outline'}`;
-        } else if (routeName === 'Reservations') {
-          iconName = `ios-list-box${focused ? '' : '-outline'}`;
-        } else if (routeName === 'Map') {
-          iconName = `ios-navigate${focused ? '' : '-outline'}`;
-        } else if (routeName === 'More') {
-          iconName = `ios-menu${focused ? '' : '-outline'}`;
-        }
-
-        // You can return any component that you like here! We usually use an
-        // icon component from react-native-vector-icons
-        return <Ionicons name={iconName} size={25} color={tintColor} />;
-      },
-    }),
-    tabBarOptions: {
-      activeTintColor: IosColor.Blue,
-      inactiveTintColor: IosColor.LightGray,
+    headerMode: 'none',
+    mode: 'modal',
+    navigationOptions: {
+      gesturesEnabled: true,
     },
+  }
+);
+
+export default createSwitchNavigator(
+  {
+    AuthLoading: AuthLoadingScreen,
+    App: AppStack,
+    Auth: AuthStack,
+  },
+  {
+    initialRouteName: 'AuthLoading',
   }
 );
