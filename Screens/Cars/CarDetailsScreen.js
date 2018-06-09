@@ -5,7 +5,9 @@ export default class CarDetailsScreen extends Component {
   render () {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Car Details!</Text>
+        <Text>
+          Car Details!
+        </Text>
       </View>
     )
   }

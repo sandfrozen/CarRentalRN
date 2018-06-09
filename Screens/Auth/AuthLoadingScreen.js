@@ -1,11 +1,6 @@
 import React from 'react'
-import {
-  ActivityIndicator,
-  AsyncStorage,
-  StatusBar,
-  View
-} from 'react-native'
-import styles from './styles.js'
+import { ActivityIndicator, AsyncStorage, StatusBar, View } from 'react-native'
+import styles from '../styles.js'
 
 export default class AuthLoadingScreen extends React.Component {
   constructor (props) {

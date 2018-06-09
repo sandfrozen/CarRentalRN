@@ -7,3 +7,7 @@ https://github.com/GeekyAnts/NativeBase/issues/72
 
 npm install standard —-save-dev
 npm install —-save-dev babel-eslint
+
+npm install --save react-native-elements
+
+npm i react-native-keyboard-aware-scroll-view --save

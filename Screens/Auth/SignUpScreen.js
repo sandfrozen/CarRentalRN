@@ -1,9 +1,6 @@
 import React from 'react'
-import {
-  View,
-  Button
-} from 'react-native'
-import styles from './styles.js'
+import { View, Button } from 'react-native'
+import styles from '../styles.js'
 
 export default class SignUpScreen extends React.Component {
   render () {

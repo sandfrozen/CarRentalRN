@@ -8,3 +8,5 @@ const IosColors = {
   Pink: 'rgb(255, 45, 85)',
   LightGray: 'rgb(142, 142, 145)'
 }
+
+export default IosColors
