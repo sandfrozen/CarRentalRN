@@ -1,24 +1,20 @@
-import React from 'react';
+import React from 'react'
 import {
-  ActivityIndicator,
-  AsyncStorage,
-  StatusBar,
-  StyleSheet,
   View,
-  Button,
-} from 'react-native';
+  Button
+} from 'react-native'
+import styles from './styles.js'
 
 export default class SignUpScreen extends React.Component {
-
-  render() {
+  render () {
     return (
       <View style={styles.container}>
-        <Button title="Back" onPress={this._goBack} />
+        <Button title='Back' onPress={this._goBack} />
       </View>
-    );
+    )
   }
 
   _goBack = async () => {
-    this.props.navigation.goBack();
+    this.props.navigation.goBack()
   };
 }

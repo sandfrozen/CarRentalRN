@@ -1,13 +1,10 @@
-import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
-import React from 'react';
+import { createSwitchNavigator, createStackNavigator } from 'react-navigation'
+import React from 'react'
 import {
-  ActivityIndicator,
   AsyncStorage,
-  StatusBar,
-  StyleSheet,
   View,
-  Button,
-} from 'react-native';
+  Button
+} from 'react-native'
 
 import styles from './styles.js'
 import SignInScreen from './SignInScreen.js'
@@ -16,58 +13,55 @@ import SignUpScreen from './SignUpScreen.js'
 import App2 from './App2.js'
 
 class HomeScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Welcome to the app!',
-  };
-
-  render() {
+  render () {
     return (
       <View style={styles.container}>
-        <Button title="Show me more of the app" onPress={this._showMoreApp} />
-        <Button title="Actually, sign me out :)" onPress={this._signOutAsync} />
+        <Button title='Show me more of the app' onPress={this._showMoreApp} />
+        <Button title='Actually, sign me out :)' onPress={this._signOutAsync} />
       </View>
-    );
+    )
   }
 
   _showMoreApp = () => {
-    this.props.navigation.navigate('Other');
+    this.props.navigation.navigate('Other')
   };
 
   _signOutAsync = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');
+    await AsyncStorage.clear()
+    this.props.navigation.navigate('Auth')
   };
 }
 
 const AppStack = createStackNavigator(
-  { Home: App2 },
+  { Home: App2, HomeScreen },
   {
     navigationOptions: {
       title: 'Car Rental'
     }
-  },
-);
+  }
+)
+
 const AuthStack = createStackNavigator(
   {
     SignIn: SignInScreen,
-    SignUp: SignUpScreen,
+    SignUp: SignUpScreen
   },
   {
     headerMode: 'none',
     mode: 'modal',
     navigationOptions: {
-      gesturesEnabled: true,
-    },
+      gesturesEnabled: true
+    }
   }
-);
+)
 
 export default createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
     App: AppStack,
-    Auth: AuthStack,
+    Auth: AuthStack
   },
   {
-    initialRouteName: 'AuthLoading',
+    initialRouteName: 'AuthLoading'
   }
-);
+)

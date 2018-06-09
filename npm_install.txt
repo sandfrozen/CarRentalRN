@@ -1,0 +1,9 @@
+npm install --save react-navigation
+
+npm install react-native-vector-icons --save
+react-native link
+react-native link react-native-vector-icons
+https://github.com/GeekyAnts/NativeBase/issues/72
+
+npm install standard —-save-dev
+npm install —-save-dev babel-eslint
