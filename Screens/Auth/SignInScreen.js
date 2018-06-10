@@ -13,6 +13,8 @@ import styles from '../styles.js'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import IosColors from '../colors.js'
 
+import API from '../API'
+
 class SignInScreen extends React.Component {
   constructor (props) {
     super(props)
@@ -50,6 +52,7 @@ class SignInScreen extends React.Component {
               type='Ionicons'
               size={100}
               style={styles.logoIcon}
+              color={IosColors.SuperLightGray}
             />
           </View>
           <TextInput
@@ -59,6 +62,7 @@ class SignInScreen extends React.Component {
             onChangeText={mail => this.setState({ mail })}
             keyboardType='email-address'
             autoCorrect={false}
+            autoCapitalize='none'
             maxLength={20}
             multiline={false}
             returnKeyType='next'
@@ -88,11 +92,19 @@ class SignInScreen extends React.Component {
               this._signInAsync()
             }}
           />
-          <Button title='Sign in!' onPress={this._signInAsync} />
+          <Button
+            title='Sign in!'
+            onPress={this._signInAsync}
+            style={styles.button}
+          />
           <Text style={styles.divider}>
-            -  or -
+            -  or  -
           </Text>
-          <Button title='Sign up!' onPress={this._signUpAsync} />
+          <Button
+            title='Sign up!'
+            onPress={this._signUpAsync}
+            style={styles.button}
+          />
 
         </KeyboardAvoidingView>
       </ScrollView>
@@ -100,9 +112,10 @@ class SignInScreen extends React.Component {
   }
 
   _signInAsync = async () => {
-    let id
-    let loginKey
-    fetch('http://192.168.1.115:8080/CarRentalREST/v1/session/signin', {
+    let id = null
+    let loginKey = null
+
+    fetch(API.URL + '/session/signin', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -123,7 +136,7 @@ class SignInScreen extends React.Component {
             AsyncStorage.setItem('c3', this.state.password)
             AsyncStorage.setItem('c4', loginKey)
           }
-          this.props.navigation.navigate('App')
+          this.props.navigation.navigate('CarRentalStack')
         })
       } else {
         Alert.alert(

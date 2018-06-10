@@ -9,11 +9,15 @@ const CarsStack = createStackNavigator(
   },
   {
     initialRouteName: 'Cars',
-    mode: 'modal',
-    headerMode: 'none',
     navigationOptions: {
-      gesturesEnabled: true
+      title: 'Car Rental',
+      headerBackTitle: 'Cars'
     }
+    // mode: 'modal',
+    // headerMode: 'none',
+    // navigationOptions: {
+    //   gesturesEnabled: true
+    // }
   }
 )
 

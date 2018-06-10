@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
 import { View, Button, AsyncStorage } from 'react-native'
-import styles from '../styles'
+import styles from '../../styles'
 
 export default class MoreScreen extends Component {
   render () {
     return (
       <View style={styles.container}>
-        <Button title='Show me more of the app' onPress={this._showMoreApp} />
         <Button title='Actually, sign me out :)' onPress={this._signOutAsync} />
       </View>
     )

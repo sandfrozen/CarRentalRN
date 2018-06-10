@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
     fontStyle: 'italic'
   },
   logoIcon: {
-    color: IosColors.SuperLightGray,
     textAlign: 'center'
   },
   button: {

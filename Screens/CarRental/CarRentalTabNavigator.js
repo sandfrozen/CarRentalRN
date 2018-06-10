@@ -1,18 +1,18 @@
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { createBottomTabNavigator } from 'react-navigation'
-import IosColor from './colors.js'
+import IosColor from '../colors.js'
 import CarsStack from './Cars/CarsStack'
-import ReservationsScreen from './Reservations/ReservationsScreen'
+import ReservationsStack from './Reservations/ReservationsStack'
 import MapScreen from './Map/MapScreen'
-import MoreScreen from './More/MoreScreen'
+import MoreStack from './More/MoreStack'
 
 export default createBottomTabNavigator(
   {
     Cars: CarsStack,
-    Reservations: ReservationsScreen,
+    Reservations: ReservationsStack,
     Map: MapScreen,
-    More: MoreScreen
+    More: MoreStack
   },
   {
     navigationOptions: ({ navigation }) => ({
@@ -38,7 +38,7 @@ export default createBottomTabNavigator(
       activeTintColor: IosColor.Blue,
       inactiveTintColor: IosColor.LightGray,
       labelStyle: {
-        fontSize: 12
+        fontSize: 14
       }
     }
   }

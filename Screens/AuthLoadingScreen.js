@@ -1,6 +1,6 @@
 import React from 'react'
 import { ActivityIndicator, AsyncStorage, StatusBar, View } from 'react-native'
-import styles from '../styles.js'
+import styles from './styles.js'
 
 export default class AuthLoadingScreen extends React.Component {
   constructor (props) {
@@ -29,16 +29,11 @@ export default class AuthLoadingScreen extends React.Component {
       })
     }).then(response => {
       if (response.status === 202) {
-        this.props.navigation.navigate('App')
+        this.props.navigation.navigate('CarRentalStack')
       } else {
-        // console.log(response.headers.map.error)
         this.props.navigation.navigate('Auth')
       }
     })
-
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
-    // this.props.navigation.navigate(auth ? 'App' : 'Auth');
   }
 
   // Render any loading content that you like here
