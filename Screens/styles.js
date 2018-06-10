@@ -7,6 +7,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  standardMargin: {
+    margin: 20
+  },
   redBorder: {
     borderColor: 'red',
     borderWidth: 2,
@@ -17,15 +20,17 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderRadius: 10,
-    width: '80%',
-    height: 50,
-    borderColor: IosColors.TealBlue,
+    borderRadius: 6,
+    width: '100%',
+    height: 40,
+    padding: 8,
+    borderColor: IosColors.SuperLightGray,
     textAlign: 'center',
-    fontSize: 23,
+    fontSize: 18,
     textAlignVertical: 'center',
     backgroundColor: 'white',
-    marginBottom: 10
+    marginVertical: 8,
+    marginHorizontal: 16
   },
   logo: {
     
@@ -37,6 +42,18 @@ const styles = StyleSheet.create({
   logoSubtitle: {
     fontSize: 17,
     textAlign: 'center'
+  },
+  divider: {
+    color: IosColors.LightGray,
+    letterSpacing: 2,
+    fontStyle: 'italic'
+  },
+  logoIcon: {
+    color: IosColors.SuperLightGray,
+    textAlign: 'center'
+  },
+  button: {
+    padding: 16
   }
 })
 

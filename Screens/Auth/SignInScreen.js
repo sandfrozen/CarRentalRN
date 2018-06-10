@@ -1,11 +1,20 @@
 import React from 'react'
-import { AsyncStorage, View, Button, Alert, Text, TextInput, ScrollView, KeyboardAvoidingView } from 'react-native'
+import {
+  AsyncStorage,
+  View,
+  Button,
+  Alert,
+  Text,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView
+} from 'react-native'
 import styles from '../styles.js'
-import { Icon } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import IosColors from '../colors.js'
 
 class SignInScreen extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       mail: 'tombs@wp.pl',
@@ -15,16 +24,20 @@ class SignInScreen extends React.Component {
     this.inputs = {}
   }
 
-  focusNextField(id) {
+  focusNextField (id) {
     this.inputs[id].focus()
   }
 
-  render() {
+  render () {
     const mail = this.state.mail
     const password = this.state.password
     return (
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+        <KeyboardAvoidingView
+          style={[styles.container, styles.standardMargin]}
+          behavior='padding'
+          enabled
+        >
           <View style={styles.logo}>
             <Text style={styles.logoTitle}>
               CarRental
@@ -35,15 +48,15 @@ class SignInScreen extends React.Component {
             <Ionicons
               name='ios-car'
               type='Ionicons'
-              color='#00aced'
               size={100}
-              style={{ textAlign: 'center' }} />
+              style={styles.logoIcon}
+            />
           </View>
           <TextInput
             style={styles.input}
             placeholder='your@mail.com'
             value={mail}
-            onChangeText={(mail) => this.setState({ mail })}
+            onChangeText={mail => this.setState({ mail })}
             keyboardType='email-address'
             autoCorrect={false}
             maxLength={20}
@@ -51,7 +64,7 @@ class SignInScreen extends React.Component {
             returnKeyType='next'
             blurOnSubmit={false}
             ref={input => {
-              this.inputs['1'] = input;
+              this.inputs['1'] = input
             }}
             onSubmitEditing={() => {
               this.focusNextField('2')
@@ -61,8 +74,8 @@ class SignInScreen extends React.Component {
             style={styles.input}
             placeholder='password'
             value={password}
-            onChangeText={(password) => this.setState({ password })}
-            secureTextEntry={true}
+            onChangeText={password => this.setState({ password })}
+            secureTextEntry
             autoCorrect={false}
             maxLength={20}
             multiline={false}
@@ -76,6 +89,9 @@ class SignInScreen extends React.Component {
             }}
           />
           <Button title='Sign in!' onPress={this._signInAsync} />
+          <Text style={styles.divider}>
+            -  or -
+          </Text>
           <Button title='Sign up!' onPress={this._signUpAsync} />
 
         </KeyboardAvoidingView>
@@ -86,7 +102,7 @@ class SignInScreen extends React.Component {
   _signInAsync = async () => {
     let id
     let loginKey
-    fetch('http://10.211.55.3:8080/CarRentalREST/v1/session/signin', {
+    fetch('http://192.168.1.115:8080/CarRentalREST/v1/session/signin', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -98,7 +114,7 @@ class SignInScreen extends React.Component {
       })
     }).then(response => {
       if (response.status === 202) {
-        (response.json()).then((json) => {
+        response.json().then(json => {
           id = json.id
           loginKey = json.loginKey
           if (id && loginKey) {
@@ -113,18 +129,16 @@ class SignInScreen extends React.Component {
         Alert.alert(
           'Not Sign In',
           'Incorrect mail or password',
-          [
-            { text: 'OK' }
-          ],
+          [{ text: 'OK' }],
           { cancelable: false }
         )
       }
     })
-  };
+  }
 
   _signUpAsync = async () => {
     this.props.navigation.push('SignUp')
-  };
+  }
 }
 
 export default SignInScreen

@@ -31,7 +31,6 @@
       "$",
       "jQuery",
       "fetch"
-    ],
-    "space-before-function-paren": ["error", "never"]
+    ]
   }
 }

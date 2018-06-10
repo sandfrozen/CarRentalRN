@@ -15,7 +15,7 @@ export default class AuthLoadingScreen extends React.Component {
     const c3 = await AsyncStorage.getItem('c3')
     const c4 = await AsyncStorage.getItem('c4')
 
-    fetch('http://10.211.55.3:8080/CarRentalREST/v1/session/auth', {
+    fetch('http://192.168.1.115:8080/CarRentalREST/v1/session/auth', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -39,7 +39,7 @@ export default class AuthLoadingScreen extends React.Component {
     // This will switch to the App screen or Auth screen and this loading
     // screen will be unmounted and thrown away.
     // this.props.navigation.navigate(auth ? 'App' : 'Auth');
-  };
+  }
 
   // Render any loading content that you like here
   render () {
