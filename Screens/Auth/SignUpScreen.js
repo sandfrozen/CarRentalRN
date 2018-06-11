@@ -60,7 +60,6 @@ export default class SignUpScreen extends React.Component {
             onChangeText={name => this.setState({ name })}
             autoCorrect={false}
             maxLength={20}
-            autoFocus
             multiline={false}
             returnKeyType='next'
             blurOnSubmit={false}

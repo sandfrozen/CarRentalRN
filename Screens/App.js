@@ -1,6 +1,6 @@
 import { createSwitchNavigator } from 'react-navigation'
 
-import AuthLoadingScreen from './AuthLoadingScreen'
+import AuthLoadingScreen from './Auth/AuthLoadingScreen'
 import AuthStack from './Auth/AuthStack'
 import CarRentalStack from './CarRental/CarRentalStack'
 

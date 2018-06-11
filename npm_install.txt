@@ -11,3 +11,5 @@ npm install —-save-dev babel-eslint
 npm install --save react-native-elements
 
 npm i react-native-keyboard-aware-scroll-view --save
+
+npm i abort-controller

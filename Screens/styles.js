@@ -32,9 +32,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16
   },
-  logo: {
-    
-  },
+  logo: {},
   logoTitle: {
     fontSize: 40,
     textAlign: 'center'
@@ -53,6 +51,33 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 16
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    opacity: 0.9,
+    zIndex: 999,
+    backgroundColor: IosColors.SuperLightGray,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  viewInView: {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  padding8: {
+    padding: 8
+  },
+  activityIndicator: {
+    margin: 16
   }
 })
 
