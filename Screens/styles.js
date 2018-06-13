@@ -78,6 +78,41 @@ const styles = StyleSheet.create({
   },
   activityIndicator: {
     margin: 16
+  },
+  detailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: 'white',
+    height: 200,
+    borderLeftWidth: 1,
+    borderLeftColor: IosColors.LightGray
+  },
+  avatarContainer: {
+    width: '40%',
+    height: '100%',
+    alignItems: 'center'
+  },
+  infoContainer: {
+    width: '60%',
+    height: '100%',
+    borderLeftWidth: 1,
+    borderLeftColor: IosColors.LightGray
+  },
+  label: {
+    color: IosColors.LightGray,
+    fontSize: 12,
+    width: 60
+  },
+  value: {
+    fontSize: 20
+  },
+  info: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: IosColors.LightGray,
+    margin: 8
   }
 })
 

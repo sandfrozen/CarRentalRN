@@ -8,6 +8,7 @@ import {
   Button
 } from 'react-native'
 import styles from '../styles.js'
+import API from '../API'
 
 export default class AuthLoadingScreen extends React.Component {
   constructor (props) {
@@ -26,7 +27,7 @@ export default class AuthLoadingScreen extends React.Component {
       this.props.navigation.navigate('Auth')
     }
 
-    fetch('http://192.168.1.115:8080/CarRentalREST/v1/session/auth', {
+    fetch(API.URL + '/session/auth', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

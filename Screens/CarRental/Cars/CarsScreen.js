@@ -11,6 +11,7 @@ import styles from '../../styles.js'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ListItem } from 'react-native-elements'
 import IosColors from '../../colors.js'
+import API from '../../API'
 
 export default class CarsScreen extends Component {
   constructor (props) {
@@ -31,7 +32,7 @@ export default class CarsScreen extends Component {
 
   _getCarsAsync = async () => {
     this.setState({ refreshing: true })
-    fetch('http://192.168.1.115:8080/CarRentalREST/v1/cars', {
+    fetch(API.URL + '/cars', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -55,12 +56,15 @@ export default class CarsScreen extends Component {
     return (
       <ListItem
         containerStyle={{ backgroundColor: 'white' }}
-        leftIcon={{ name: 'directions-car' }}
+        roundAvatar
+        avatar={rowData.imageurl}
         title={rowData.brand + ' ' + rowData.model}
         subtitle={rowData.daycost.toFixed(2) + ' PLN / day'}
         rightIcon={{ name: 'chevron-right' }}
         onPress={() => {
-          this.props.navigation.navigate('CarDetails')
+          this.props.navigation.navigate('CarDetails', {
+            car: rowData
+          })
         }}
       />
     )
@@ -99,7 +103,7 @@ export default class CarsScreen extends Component {
     } else {
       return (
         <ListView
-          style={{marginTop: 16}}
+          style={{ marginTop: 16 }}
           dataSource={this.state.carsList}
           renderRow={this.renderRow}
           enableEmptySections
