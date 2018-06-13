@@ -8,6 +8,7 @@ const IosColors = {
   Pink: 'rgb(255, 45, 85)',
   LightGray: 'rgb(142, 142, 145)',
   SuperLightGray: 'rgb(200,200,200)',
+  Background: 'rgb(233,233,238)',
   Green: 'rgb(76,217,100)',
   GreenMy: 'rgb(87, 165, 84)'
 }

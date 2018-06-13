@@ -113,6 +113,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: IosColors.LightGray,
     margin: 8
+  },
+  listTitle: {
+    backgroundColor: IosColors.Background,
+    padding: 8,
+    paddingLeft: 12
   }
 })
 

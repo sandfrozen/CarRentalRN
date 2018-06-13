@@ -1,97 +1,152 @@
 import React, { Component } from 'react'
 import { Text, View, Image, ScrollView, ListView } from 'react-native'
-import { ListItem } from 'react-native-elements'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import { ListItem, Button } from 'react-native-elements'
 import styles from '../../styles.js'
-
-const reservations = [
-  {
-    from: '1',
-    to: '2'
-  },
-  {
-    from: '3',
-    to: '4'
-  },
-  {
-    from: '5',
-    to: '6'
-  }
-]
+import IosColors from '../../colors.js'
+import API from '../../API'
 
 export default class CarDetailsScreen extends Component {
   static navigationOptions = {
     title: 'Details'
   }
 
-  // constructor (props) {
-  //   super(props)
-  // }
+  constructor (props) {
+    super(props)
+
+    const { navigation } = this.props
+    const car = navigation.getParam('car', '')
+
+    this.state = {
+      car: car,
+      reservations: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      })
+    }
+
+    this.renderRow = this.renderRow.bind(this)
+  }
+
+  componentDidMount () {
+    this._getReservationsAsync()
+  }
+
+  _getReservationsAsync = async () => {
+    fetch(API.URL + '/cars/' + this.state.car.id + '/reservations', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        response.json().then(json => {
+          this.setState({
+            reservations: this.state.reservations.cloneWithRows(
+              json.reservations
+            )
+          })
+          console.log(json.reservations)
+        })
+      } else {
+        console.log('reservations getting error')
+      }
+    })
+  }
+
+  renderRow (rowData, sectionID) {
+    const from = new Date(rowData.fromDate).toLocaleDateString()
+    const to = new Date(rowData.toDate).toLocaleDateString()
+    return (
+      <ListItem
+        hideChevron
+        leftIcon={{ name: 'event-note' }}
+        title={from + ' -> ' + to}
+      />
+    )
+  }
 
   render () {
     const { navigation } = this.props
     const car = navigation.getParam('car', '')
-    console.log(car.imageurl)
+
     return (
       <ScrollView>
-        <View style={styles.detailsContainer}>
-          <View style={styles.avatarContainer}>
-            <Image
-              source={{ uri: car.imageurl }}
-              style={{ width: '100%', height: '100%' }}
-              resizeMode='contain'
-            />
-          </View>
-          <ScrollView style={styles.infoContainer}>
-            <Info label='brand' value={car.brand} />
-            <Info label='model' value={car.model} />
-            <Info label='doors' value={car.doors} />
-            <Info
-              label='type'
-              value={car.fueltype === 'd' ? 'diesel' : 'petrol'}
-            />
-            <Info
-              label='gears'
-              value={car.gears}
-              extra={car.gearbox === 'M' ? '(manual)' : '(automatic)'}
-            />
-            <Info label='fuel' value={car.fuelcap} extra='L' />
-            <Info label='range' value={car.range} extra='km' />
-            <Info label='day' value={car.daycost} extra='PLN' />
-
-          </ScrollView>
+        <Image
+          source={{ uri: car.imageurl }}
+          style={{
+            width: '100%',
+            height: 200,
+            marginBottom: 16,
+            backgroundColor: 'white'
+          }}
+          resizeMode='contain'
+        />
+        <Text style={styles.listTitle}>
+          Details:
+        </Text>
+        <View
+          backgroundColor='white'
+          style={{
+            borderTopWidth: 1,
+            borderColor: IosColors.SuperLightGray,
+            marginBottom: 16
+          }}
+        >
+          <ListItem
+            leftIcon={{ name: 'directions-car' }}
+            key={'brand'}
+            title={car['brand'] + ' ' + car['model']}
+            hideChevron
+          />
+          <ListItem
+            leftIcon={{ name: 'check' }}
+            key={'doors'}
+            title={car['doors'] + ' doors'}
+            hideChevron
+          />
+          <ListItem
+            leftIcon={{ name: 'check' }}
+            key={'gears'}
+            title={
+              car['gears'] +
+                ' gears ' +
+                (car['gearbox'] === 'A' ? '(automatic)' : '(manual)')
+            }
+            hideChevron
+          />
+          <ListItem
+            leftIcon={{ name: 'check' }}
+            key={'fueltype'}
+            title={
+              (car['fueltype'] === 'd' ? 'diesel (' : 'petrol (') +
+                car['fuelcap'] +
+                ' l.)'
+            }
+            hideChevron
+          />
+          <ListItem
+            leftIcon={{ name: 'plus-one' }}
+            key={'add'}
+            title={'Reserve This Car'}
+            hideChevron
+          />
         </View>
-        <View>
-          <Text style={styles.value}>
+        <View
+          backgroundColor='white'
+          style={{
+            marginBottom: 16
+          }}
+        >
+          <Text style={styles.listTitle}>
             Reservations:
           </Text>
-          {reservations.map((item, i) => (
-            <ListItem
-              containerStyle={{ backgroundColor: 'white' }}
-              key={i}
-              title={item.from + ' - ' + item.to}
-              leftIcon={{ name: 'list' }}
-              hideChevron
-            />
-          ))}
+          <ListView
+            dataSource={this.state.reservations}
+            renderRow={this.renderRow}
+            enableEmptySections
+          />
         </View>
       </ScrollView>
-    )
-  }
-}
-
-class Info extends Component {
-  render () {
-    const { label, value, extra } = this.props
-    return (
-      <View style={styles.info}>
-        <Text style={styles.label}>
-          {label}:
-        </Text>
-        <Text style={styles.value}>
-          {value} {extra}
-        </Text>
-      </View>
     )
   }
 }
