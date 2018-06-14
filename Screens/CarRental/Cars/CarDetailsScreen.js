@@ -101,13 +101,19 @@ export default class CarDetailsScreen extends Component {
           <ListItem
             leftIcon={{ name: 'directions-car' }}
             key={'brand'}
-            title={car['brand'] + ' ' + car['model']}
+            title={car['brand'] + ' ' + car['model'] + ' ' + car['yearprod']}
+            hideChevron
+          />
+          <ListItem
+            leftIcon={{ name: 'check' }}
+            key={'color'}
+            title={car['color']}
             hideChevron
           />
           <ListItem
             leftIcon={{ name: 'check' }}
             key={'doors'}
-            title={car['doors'] + ' doors'}
+            title={car['doors'] + ' doors, ' + car['boot'] + ' liters boot'}
             hideChevron
           />
           <ListItem
@@ -116,7 +122,9 @@ export default class CarDetailsScreen extends Component {
             title={
               car['gears'] +
                 ' gears ' +
-                (car['gearbox'] === 'A' ? '(automatic)' : '(manual)')
+                (car['gearbox'] === 'A' ? '(automatic, ' : '(manual, ') +
+                car['drive'] +
+                ')'
             }
             hideChevron
           />
@@ -128,6 +136,12 @@ export default class CarDetailsScreen extends Component {
                 car['fuelcap'] +
                 ' l.)'
             }
+            hideChevron
+          />
+          <ListItem
+            leftIcon={{ name: 'check' }}
+            key={'price'}
+            title={car['daycost'].toFixed(2) + ' PLN / day'}
             hideChevron
           />
         </View>
