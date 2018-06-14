@@ -32,6 +32,7 @@ export default class CarDetailsScreen extends Component {
     }
 
     this.renderRow = this.renderRow.bind(this)
+    this.markedDates = this.markedDates.bind(this)
   }
 
   componentDidMount () {
@@ -53,7 +54,12 @@ export default class CarDetailsScreen extends Component {
               json.reservations
             )
           })
-          console.log(json.reservations)
+
+          // let res = json.reservations
+          // for (let r in res) {
+          //   console.log(res[r].fromDate)
+          //   console.log(res[r].toDate)
+          // }
         })
       } else {
         console.log('reservations getting error')
@@ -71,6 +77,28 @@ export default class CarDetailsScreen extends Component {
         title={from + ' -> ' + to}
       />
     )
+  }
+
+  markedDates () {
+    let marks = { '': {} }
+    let res = this.state.reservations
+    for (let i = 0; i < res.getRowCount(); i++) {
+      let from = new Date(res.getRowData(0, i).fromDate)
+      let to = new Date(res.getRowData(0, i).toDate)
+
+      do {
+        from = new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1)
+      } while (from < to)
+
+      console.log(from < to)
+    }
+
+    marks['2018-06-18'] = {
+      color: IosColors.PinkHalf,
+      startingDay: true,
+      endingDay: true
+    }
+    return marks
   }
 
   render () {
@@ -182,6 +210,24 @@ export default class CarDetailsScreen extends Component {
             scrollEnabled
             pastScrollRange={0}
             pagingEnabled
+            markedDates={this.markedDates()}
+            // markedDates={{
+            //   '2018-06-23': {
+            //     color: IosColors.PinkHalf,
+            //     startingDay: true,
+            //     endingDay: true
+            //   },
+            //   '2018-06-24': {
+            //     color: IosColors.PinkHalf
+            //   },
+            //   '2018-06-25': {
+            //     color: IosColors.PinkHalf
+            //   },
+            //   '2018-06-26': {
+            //     color: IosColors.PinkHalf
+            //   }
+            // }}
+            markingType='period'
           />
         </View>
       </ScrollView>

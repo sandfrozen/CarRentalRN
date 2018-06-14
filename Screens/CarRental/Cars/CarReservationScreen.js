@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View } from 'react-native'
 
-export default class NewReservationScreen extends Component {
+export default class CarReservationScreen extends Component {
   static navigationOptions = {
     title: 'Details'
   }
@@ -10,7 +10,7 @@ export default class NewReservationScreen extends Component {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>
-          Car Details!
+          Car Reseravtion!
         </Text>
       </View>
     )

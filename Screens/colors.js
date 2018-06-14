@@ -6,6 +6,7 @@ const IosColors = {
   Blue: 'rgb(0, 122, 255)',
   Purple: 'rgb(88, 86, 214)',
   Pink: 'rgb(255, 45, 85)',
+  PinkHalf: 'rgb(255, 100, 120)',
   LightGray: 'rgb(142, 142, 145)',
   SuperLightGray: 'rgb(200,200,200)',
   Background: 'rgb(233,233,238)',
