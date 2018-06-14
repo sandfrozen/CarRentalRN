@@ -103,7 +103,7 @@ export default class CarsScreen extends Component {
     } else {
       return (
         <ListView
-          style={{ marginTop: 16 }}
+          style={{ paddingTop: 16 }}
           dataSource={this.state.carsList}
           renderRow={this.renderRow}
           enableEmptySections

@@ -117,7 +117,10 @@ const styles = StyleSheet.create({
   listTitle: {
     backgroundColor: IosColors.Background,
     padding: 8,
-    paddingLeft: 12
+    paddingTop: 24,
+    paddingLeft: 12,
+    fontWeight: 'bold',
+    letterSpacing: 1
   }
 })
 

@@ -1,9 +1,17 @@
 import React, { Component } from 'react'
-import { Text, View, Image, ScrollView, ListView } from 'react-native'
+import {
+  Text,
+  View,
+  Image,
+  ScrollView,
+  ListView,
+  Dimensions
+} from 'react-native'
 import { ListItem, Button } from 'react-native-elements'
 import styles from '../../styles.js'
 import IosColors from '../../colors.js'
 import API from '../../API'
+import { CalendarList } from 'react-native-calendars'
 
 export default class CarDetailsScreen extends Component {
   static navigationOptions = {
@@ -68,7 +76,7 @@ export default class CarDetailsScreen extends Component {
   render () {
     const { navigation } = this.props
     const car = navigation.getParam('car', '')
-
+    const { width } = Dimensions.get('window')
     return (
       <ScrollView>
         <Image
@@ -76,7 +84,6 @@ export default class CarDetailsScreen extends Component {
           style={{
             width: '100%',
             height: 200,
-            marginBottom: 16,
             backgroundColor: 'white'
           }}
           resizeMode='contain'
@@ -88,8 +95,7 @@ export default class CarDetailsScreen extends Component {
           backgroundColor='white'
           style={{
             borderTopWidth: 1,
-            borderColor: IosColors.SuperLightGray,
-            marginBottom: 16
+            borderColor: IosColors.SuperLightGray
           }}
         >
           <ListItem
@@ -124,26 +130,44 @@ export default class CarDetailsScreen extends Component {
             }
             hideChevron
           />
-          <ListItem
-            leftIcon={{ name: 'plus-one' }}
-            key={'add'}
-            title={'Reserve This Car'}
-            hideChevron
-          />
         </View>
         <View
           backgroundColor='white'
           style={{
-            marginBottom: 16
+            marginTop: 24
+          }}
+        >
+          <ListItem
+            key={'add'}
+            title={'Reserve This Car'}
+            hideChevron
+            titleStyle={{
+              textAlign: 'center',
+              color: IosColors.Blue
+            }}
+            onPress={() => {
+              this.props.navigation.navigate('NewReservation', {
+                car: car
+              })
+            }}
+          />
+        </View>
+        <View
+          style={{
+            marginBottom: 24
           }}
         >
           <Text style={styles.listTitle}>
-            Reservations:
+            Actual Reservations:
           </Text>
-          <ListView
-            dataSource={this.state.reservations}
-            renderRow={this.renderRow}
-            enableEmptySections
+
+          <CalendarList
+            horizontal
+            calendarWidth={width}
+            firstDay={1}
+            scrollEnabled
+            pastScrollRange={0}
+            pagingEnabled
           />
         </View>
       </ScrollView>

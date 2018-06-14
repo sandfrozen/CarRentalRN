@@ -12,4 +12,6 @@ npm install --save react-native-elements
 
 npm i react-native-keyboard-aware-scroll-view --save
 
-npm i abort-controller
+//npm i abort-controller
+
+npm install --save react-native-calendars
