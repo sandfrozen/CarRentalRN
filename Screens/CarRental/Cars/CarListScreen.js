@@ -13,7 +13,7 @@ import { ListItem } from 'react-native-elements'
 import IosColors from '../../colors.js'
 import API from '../../API'
 
-export default class CarsScreen extends Component {
+export default class CarListScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {

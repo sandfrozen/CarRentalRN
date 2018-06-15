@@ -5,7 +5,8 @@ import {
   Image,
   ScrollView,
   ListView,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native'
 import { ListItem } from 'react-native-elements'
 import styles from '../../styles.js'
@@ -22,132 +23,87 @@ export default class CarDetailsScreen extends Component {
     super(props)
 
     const { navigation } = this.props
-    const car = navigation.getParam('car', '')
+    const id = navigation.getParam('id', '')
 
     this.state = {
-      car: car,
+      id: id,
+      car: {
+        boot: 0,
+        brand: 'Loading',
+        color: 'Loading',
+        daycost: 0.0,
+        doors: 0,
+        drive: 'Loading',
+        fuelcap: 0,
+        fueltype: 'Loading',
+        gearbox: 'Loading',
+        gears: 0,
+        id: 0,
+        imageurl: '',
+        lastUpdate: '',
+        model: 'Loading',
+        range: 0,
+        yearprod: 0
+      },
       reservations: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       })
     }
-
-    this.renderRow = this.renderRow.bind(this)
-    this.markedDates = this.markedDates.bind(this)
   }
 
   componentDidMount () {
-    this._getReservationsAsync()
+    this._getCarAsync()
   }
 
-  _getReservationsAsync = async () => {
-    fetch(API.URL + '/cars/' + this.state.car.id + '/reservations', {
+  _getCarAsync = async () => {
+    fetch(API.URL + '/cars/' + this.state.id, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       }
-    }).then(response => {
-      if (response.status === 200) {
-        response.json().then(json => {
-          this.setState({
-            reservations: this.state.reservations.cloneWithRows(
-              json.reservations
-            )
-          })
-        })
-      } else {
-        console.log('reservations getting error')
-      }
     })
-  }
-
-  renderRow (rowData, sectionID) {
-    const from = new Date(rowData.fromDate).toLocaleDateString()
-    const to = new Date(rowData.toDate).toLocaleDateString()
-    return (
-      <ListItem
-        hideChevron
-        leftIcon={{ name: 'event-note' }}
-        title={from + ' -> ' + to}
-      />
-    )
-  }
-
-  markedDates () {
-    let marks = { '': {} }
-    let res = this.state.reservations
-
-    for (let i = 0; i < res.getRowCount(); i++) {
-      // prepare dates
-      let from = new Date(res.getRowData(0, i).fromDate)
-      from = new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1)
-        .toISOString()
-        .substring(0, 10)
-      let to = new Date(res.getRowData(0, i).toDate)
-      to = new Date(to.getFullYear(), to.getMonth(), to.getDate() + 1)
-        .toISOString()
-        .substring(0, 10)
-      // -------------
-
-      from = new Date(from)
-      to = new Date(to)
-      let first = from.toISOString().substring(0, 10)
-      let last = to.toISOString().substring(0, 10)
-
-      console.log(from)
-      console.log(to)
-      const color = IosColors.OrangeLight
-
-      if (first === last) {
-        console.log('in eq ' + from)
-        marks[first] = {
-          color: color,
-          startingDay: true,
-          endingDay: true
+      .then(response => {
+        if (response.status === 200) {
+          response.json().then(json => {
+            this.setState({
+              car: json.car
+            })
+          })
+        } else {
+          Alert.alert('Connection problem', '', [{ text: 'OK' }], {
+            cancelable: false
+          })
+          this.props.navigation.goBack()
         }
-      } else {
-        marks[first] = {
-          startingDay: true,
-          color: color
-        }
-        from = new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1)
-        while (from < to) {
-          from = new Date(
-            from.getFullYear(),
-            from.getMonth(),
-            from.getDate() + 1
-          )
-          let date = from.toISOString().substring(0, 10)
-
-          marks[date] = {
-            color: color
-          }
-        }
-
-        marks[last] = {
-          color: color,
-          endingDay: true
-        }
-      }
-    }
-    return marks
+      })
+      .catch(() => {
+        Alert.alert('Connection problem', '', [{ text: 'OK' }], {
+          cancelable: false
+        })
+        this.props.navigation.goBack()
+      })
   }
 
   render () {
-    const { navigation } = this.props
-    const car = navigation.getParam('car', '')
-    const { width } = Dimensions.get('window')
+    const car = this.state.car
+    const url = this.state.car.imageurl
+    const loading = this.state.car.id === 0
     return (
       <ScrollView>
-        <Image
-          source={{ uri: car.imageurl }}
-          style={{
-            width: '100%',
-            height: 200,
-            backgroundColor: 'white'
-          }}
-          resizeMode='contain'
-        />
+        {url
+          ? <Image
+            source={{ uri: url }}
+            style={{
+              width: '100%',
+              height: 200,
+              backgroundColor: 'white'
+            }}
+            resizeMode='contain'
+          />
+          : <Text style={styles.listTitle}>
+              Loading car...
+          </Text>}
         <Text style={styles.listTitle}>
           Details:
         </Text>
@@ -214,8 +170,9 @@ export default class CarDetailsScreen extends Component {
         <View
           backgroundColor='white'
           style={{
-            marginTop: 24
+            marginVertical: 24
           }}
+          pointerEvents={loading ? 'none' : 'auto'}
         >
           <ListItem
             key={'add'}
@@ -227,29 +184,8 @@ export default class CarDetailsScreen extends Component {
             }}
             onPress={() => {
               this.props.navigation.navigate('NewReservation', {
-                car: car
+                id: car.id
               })
-            }}
-          />
-        </View>
-        <View
-          style={{
-            marginBottom: 24
-          }}
-        >
-          <Text style={styles.listTitle}>Actual Reservations:</Text>
-          <CalendarList
-            horizontal
-            current
-            calendarWidth={width}
-            firstDay={1}
-            scrollEnabled
-            pastScrollRange={0}
-            pagingEnabled
-            markedDates={this.markedDates()}
-            markingType='period'
-            theme={{
-              todayTextColor: '#00adf5'
             }}
           />
         </View>

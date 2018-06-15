@@ -121,6 +121,18 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     fontWeight: 'bold',
     letterSpacing: 1
+  },
+  information: {
+    backgroundColor: 'white',
+    padding: 8,
+    paddingLeft: 12,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+    color: IosColors.OrangeLight
+  },
+  buttonOption: {
+    textAlign: 'left',
+    fontSize: 12
   }
 })
 
