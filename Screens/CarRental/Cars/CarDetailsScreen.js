@@ -54,12 +54,6 @@ export default class CarDetailsScreen extends Component {
               json.reservations
             )
           })
-
-          // let res = json.reservations
-          // for (let r in res) {
-          //   console.log(res[r].fromDate)
-          //   console.log(res[r].toDate)
-          // }
         })
       } else {
         console.log('reservations getting error')
@@ -82,21 +76,71 @@ export default class CarDetailsScreen extends Component {
   markedDates () {
     let marks = { '': {} }
     let res = this.state.reservations
+
     for (let i = 0; i < res.getRowCount(); i++) {
+      // prepare dates
       let from = new Date(res.getRowData(0, i).fromDate)
+      from = new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1)
+        .toISOString()
+        .substring(0, 10)
       let to = new Date(res.getRowData(0, i).toDate)
+      to = new Date(to.getFullYear(), to.getMonth(), to.getDate() + 1)
+        .toISOString()
+        .substring(0, 10)
+      // -------------
 
-      do {
+      from = new Date(from)
+      to = new Date(to)
+      let first = from.toISOString().substring(0, 10)
+      let last = to.toISOString().substring(0, 10)
+
+      console.log(from)
+      console.log(to)
+
+      if (first === last) {
+        console.log('in eq ' + from)
+        marks[first] = {
+          color: IosColors.PinkHalf,
+          startingDay: true,
+          endingDay: true
+        }
+      } else {
+        marks[first] = {
+          startingDay: true,
+          color: IosColors.PinkHalf
+        }
         from = new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1)
-      } while (from < to)
+        while (from < to) {
+          from = new Date(
+            from.getFullYear(),
+            from.getMonth(),
+            from.getDate() + 1
+          )
+          let date = from.toISOString().substring(0, 10)
 
-      console.log(from < to)
+          marks[date] = {
+            color: IosColors.PinkHalf
+          }
+        }
+
+        to = to.toISOString().substring(0, 10)
+        marks[to] = {
+          color: IosColors.PinkHalf,
+          endingDay: true
+        }
+      }
     }
-
-    marks['2018-06-18'] = {
-      color: IosColors.PinkHalf,
-      startingDay: true,
-      endingDay: true
+    let tooday = new Date().toISOString().substring(0, 10)
+    if (marks[tooday] === undefined) {
+      marks[new Date().toISOString().substring(0, 10)] = {
+        color: IosColors.SelectedBlue,
+        startingDay: true,
+        endingDay: true
+      }
+    } else {
+      marks[new Date().toISOString().substring(0, 10)] = {
+        color: IosColors.SelectedBlue
+      }
     }
     return marks
   }
@@ -135,7 +179,7 @@ export default class CarDetailsScreen extends Component {
           <ListItem
             leftIcon={{ name: 'check' }}
             key={'color'}
-            title={car['color']}
+            title={'color: ' + car['color']}
             hideChevron
           />
           <ListItem
@@ -169,7 +213,7 @@ export default class CarDetailsScreen extends Component {
           <ListItem
             leftIcon={{ name: 'check' }}
             key={'price'}
-            title={car['daycost'].toFixed(2) + ' PLN / day'}
+            title={car['daycost'].toFixed(2) + '  pln / day'}
             hideChevron
           />
         </View>
@@ -205,6 +249,7 @@ export default class CarDetailsScreen extends Component {
 
           <CalendarList
             horizontal
+            current
             calendarWidth={width}
             firstDay={1}
             scrollEnabled

@@ -3,7 +3,7 @@ import { Text, View } from 'react-native'
 
 export default class CarReservationScreen extends Component {
   static navigationOptions = {
-    title: 'Details'
+    title: 'Reservation'
   }
 
   render () {
