@@ -1,9 +1,10 @@
 const IosColors = {
   Red: 'rgb(255, 59, 48)',
   Orange: 'rgb(255, 149, 0)',
+  OrangeLight: 'rgb(255, 199, 0)',
   Yellow: 'rgb(76, 217, 100)',
   TealBlue: 'rgb(90, 200, 250)',
-  SelectedBlue: 'rgba(69, 172, 239, 0.7)',
+  SelectedBlue: 'rgb(69, 172, 239)',
   Blue: 'rgb(0, 122, 255)',
   Purple: 'rgb(88, 86, 214)',
   Pink: 'rgb(255, 45, 85)',

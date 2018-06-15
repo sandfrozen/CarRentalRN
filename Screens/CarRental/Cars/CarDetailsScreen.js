@@ -7,7 +7,7 @@ import {
   ListView,
   Dimensions
 } from 'react-native'
-import { ListItem, Button } from 'react-native-elements'
+import { ListItem } from 'react-native-elements'
 import styles from '../../styles.js'
 import IosColors from '../../colors.js'
 import API from '../../API'
@@ -96,18 +96,19 @@ export default class CarDetailsScreen extends Component {
 
       console.log(from)
       console.log(to)
+      const color = IosColors.OrangeLight
 
       if (first === last) {
         console.log('in eq ' + from)
         marks[first] = {
-          color: IosColors.PinkHalf,
+          color: color,
           startingDay: true,
           endingDay: true
         }
       } else {
         marks[first] = {
           startingDay: true,
-          color: IosColors.PinkHalf
+          color: color
         }
         from = new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1)
         while (from < to) {
@@ -119,27 +120,14 @@ export default class CarDetailsScreen extends Component {
           let date = from.toISOString().substring(0, 10)
 
           marks[date] = {
-            color: IosColors.PinkHalf
+            color: color
           }
         }
 
-        to = to.toISOString().substring(0, 10)
-        marks[to] = {
-          color: IosColors.PinkHalf,
+        marks[last] = {
+          color: color,
           endingDay: true
         }
-      }
-    }
-    let tooday = new Date().toISOString().substring(0, 10)
-    if (marks[tooday] === undefined) {
-      marks[new Date().toISOString().substring(0, 10)] = {
-        color: IosColors.SelectedBlue,
-        startingDay: true,
-        endingDay: true
-      }
-    } else {
-      marks[new Date().toISOString().substring(0, 10)] = {
-        color: IosColors.SelectedBlue
       }
     }
     return marks
@@ -185,7 +173,13 @@ export default class CarDetailsScreen extends Component {
           <ListItem
             leftIcon={{ name: 'check' }}
             key={'doors'}
-            title={car['doors'] + ' doors, ' + car['boot'] + ' liters boot'}
+            title={car['doors'] + ' doors'}
+            hideChevron
+          />
+          <ListItem
+            leftIcon={{ name: 'check' }}
+            key={'boot'}
+            title={car['boot'] + ' liters boot'}
             hideChevron
           />
           <ListItem
@@ -243,10 +237,7 @@ export default class CarDetailsScreen extends Component {
             marginBottom: 24
           }}
         >
-          <Text style={styles.listTitle}>
-            Actual Reservations:
-          </Text>
-
+          <Text style={styles.listTitle}>Actual Reservations:</Text>
           <CalendarList
             horizontal
             current
@@ -256,23 +247,10 @@ export default class CarDetailsScreen extends Component {
             pastScrollRange={0}
             pagingEnabled
             markedDates={this.markedDates()}
-            // markedDates={{
-            //   '2018-06-23': {
-            //     color: IosColors.PinkHalf,
-            //     startingDay: true,
-            //     endingDay: true
-            //   },
-            //   '2018-06-24': {
-            //     color: IosColors.PinkHalf
-            //   },
-            //   '2018-06-25': {
-            //     color: IosColors.PinkHalf
-            //   },
-            //   '2018-06-26': {
-            //     color: IosColors.PinkHalf
-            //   }
-            // }}
             markingType='period'
+            theme={{
+              todayTextColor: '#00adf5'
+            }}
           />
         </View>
       </ScrollView>
