@@ -1,9 +1,11 @@
 import { createStackNavigator } from 'react-navigation'
 import MoreScreen from './MoreScreen.js'
+import MyAccountScreen from './MyAccountScreen.js'
 
 const MoreStack = createStackNavigator(
   {
-    More: MoreScreen
+    More: MoreScreen,
+    MyAccount: MyAccountScreen
   },
   {
     initialRouteName: 'More',

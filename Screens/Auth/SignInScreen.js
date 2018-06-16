@@ -26,8 +26,8 @@ class SignInScreen extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      mail: 'tombs@wp.pl',
-      password: 'password',
+      mail: '',
+      password: '',
       loading: false
     }
     this.inputs = {}
@@ -35,6 +35,19 @@ class SignInScreen extends React.Component {
 
   focusNextField (id) {
     this.inputs[id].focus()
+  }
+
+  componentDidMount () {
+    this._loadAsyncStorage()
+  }
+
+  _loadAsyncStorage = async () => {
+    const ma = await AsyncStorage.getItem('ma')
+    const pa = await AsyncStorage.getItem('pa')
+    this.setState({
+      mail: ma,
+      password: pa
+    })
   }
 
   render () {

@@ -9,11 +9,26 @@ import {
 } from 'react-native'
 import styles from '../../styles.js'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { ListItem } from 'react-native-elements'
+import { ListItem, Icon } from 'react-native-elements'
 import IosColors from '../../colors.js'
 import API from '../../API'
 
 export default class CarsScreen extends Component {
+  static navigationOptions = ({ navigation, navigationOptions }) => {
+    return {
+      headerRight: (
+        <Icon
+          name='ios-search-outline'
+          type='ionicon'
+          color={IosColors.Blue}
+          size={28}
+          containerStyle={{ padding: 8, paddingRight: 16 }}
+          onPress={navigation.getParam('goToSearch')}
+        />
+      )
+    }
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -27,7 +42,36 @@ export default class CarsScreen extends Component {
   }
 
   componentDidMount () {
+    this.props.navigation.setParams({ goToSearch: this._goToSearch })
     this._getCarsAsync()
+  }
+
+  _goToSearch = () => {
+    this.props.navigation.navigate('CarsSearch', {
+      CarsScreen: this
+    })
+  }
+
+  _getCarsAsyncWithParams = async (params) => {
+    this.setState({ refreshing: true })
+    fetch(API.URL + '/cars' + params, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        response.json().then(json => {
+          this.setState({
+            carsList: this.state.carsList.cloneWithRows(json.cars)
+          })
+        })
+      } else {
+        console.log('cars getting error')
+      }
+      this.setState({ refreshing: false })
+    })
   }
 
   _getCarsAsync = async () => {

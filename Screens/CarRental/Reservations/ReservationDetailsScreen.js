@@ -21,16 +21,18 @@ import API from '../../API'
 
 export default class ReservationDetailsScreen extends Component {
   static navigationOptions = ({ navigation, navigationOptions }) => {
+    let params = navigation.state.params
     return {
       title: 'Details',
       headerRight: (
         <Icon
           name='ios-trash-outline'
           type='ionicon'
-          color={IosColors.Blue}
+          color={params.actual ? IosColors.LightGray : IosColors.Blue}
+          disabled={params.actual}
           size={28}
           containerStyle={{ padding: 8, paddingRight: 16 }}
-          onPress={navigation.getParam('increaseCount')}
+          onPress={navigation.getParam('showDeleteAlert')}
         />
       )
     }
@@ -44,27 +46,37 @@ export default class ReservationDetailsScreen extends Component {
 
     this.state = {
       id: id,
-      reservation: undefined
+      reservation: undefined,
+      actual: true
     }
   }
 
   componentDidMount () {
-    this.props.navigation.setParams({ increaseCount: this._increaseCount })
+    this.props.navigation.setParams({ showDeleteAlert: this._showDeleteAlert })
     this._getReservationAsync()
   }
 
-  _increaseCount = () => {
-    AlertIOS.alert('Delete this reservation?', '', [
-      {
-        text: 'Cancel',
-        style: 'cancel'
-      },
-      {
-        text: 'Delete',
-        onPress: () => this._deleteReservation(),
-        style: 'destructive'
-      }
-    ])
+  _showDeleteAlert = () => {
+    if (this.state.actual) {
+      AlertIOS.alert('You can not delete actual reservation', '', [
+        {
+          text: 'Ok',
+          style: 'cancel'
+        }
+      ])
+    } else {
+      AlertIOS.alert('Delete this reservation?', '', [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Delete',
+          onPress: () => this._deleteReservation(),
+          style: 'destructive'
+        }
+      ])
+    }
   }
 
   _deleteReservation = () => {
@@ -101,9 +113,17 @@ export default class ReservationDetailsScreen extends Component {
       .then(response => {
         if (response.status === 200) {
           response.json().then(json => {
-            this.setState({
-              reservation: json.reservation
-            })
+            const now = new Date()
+            this.setState(
+              {
+                reservation: json.reservation,
+                actual: now > new Date(json.reservation.fromDate) &&
+                  now < new Date(json.reservation.toDate)
+              },
+              () => {
+                this.props.navigation.setParams({ actual: this.state.actual })
+              }
+            )
             console.log(json.reservation)
           })
         } else {
@@ -141,6 +161,7 @@ export default class ReservationDetailsScreen extends Component {
       const car = this.state.reservation.car
       let from = new Date(this.state.reservation.fromDate)
       let to = new Date(this.state.reservation.toDate)
+      let actual = this.state.actual
       let f = from
       let i = 1
       while (f < to) {
@@ -164,6 +185,9 @@ export default class ReservationDetailsScreen extends Component {
 
       return (
         <ScrollView>
+          <Text style={styles.listTitle}>
+            {this.state.actual ? 'This reservation is on' : 'This is future reservation'}
+          </Text>
           <View
             backgroundColor='white'
             style={{
@@ -222,6 +246,7 @@ export default class ReservationDetailsScreen extends Component {
           </View>
           <Button
             title='Edit reservation'
+            disabled={actual}
             onPress={() => {
               this.props.navigation.navigate('CarDetails', {
                 id: car.id

@@ -2,14 +2,14 @@ import { createStackNavigator } from 'react-navigation'
 import CarsScreen from './CarsScreen.js'
 import CarDetailsScreen from './CarDetailsScreen.js'
 import CarReservationScreen from './CarReservationScreen'
-// import CarListScreen from './CarListScreen'
+import CarsSearchScreen from './CarsSearchScreen'
 
 const CarsStack = createStackNavigator(
   {
     Cars: CarsScreen,
     CarDetails: CarDetailsScreen,
-    NewReservation: CarReservationScreen
-    // CarList: CarListScreen
+    NewReservation: CarReservationScreen,
+    CarsSearch: CarsSearchScreen
   },
   {
     initialRouteName: 'Cars',
