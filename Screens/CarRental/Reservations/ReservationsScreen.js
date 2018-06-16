@@ -1,18 +1,318 @@
 import React, { Component } from 'react'
-import { Text, View, Button } from 'react-native'
+import {
+  Text,
+  View,
+  ActivityIndicator,
+  StatusBar,
+  ListView,
+  RefreshControl,
+  AsyncStorage,
+  ScrollView
+} from 'react-native'
+import styles from '../../styles.js'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { ListItem } from 'react-native-elements'
+import IosColors from '../../colors.js'
+import API from '../../API'
 
 export default class ReservationsScreen extends Component {
-  render () {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      reservationsPast: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      }),
+      reservationsActual: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      }),
+      reservationsFuture: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      }),
+      refreshing: true,
+      pastVisible: false,
+      actualVisible: true,
+      futureVisible: false
+    }
+
+    this.renderRow = this.renderRow.bind(this)
+  }
+
+  componentDidMount () {
+    this._getActualReservationsAsync()
+    this._getFutureReservationsAsync()
+    this._getPastReservationsAsync()
+  }
+
+  _getPastReservationsAsync = async () => {
+    this.setState({ refreshing: true })
+    const customerId = await AsyncStorage.getItem('id')
+
+    fetch(API.URL + '/customers/' + customerId + '/reservations/past', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        response.json().then(json => {
+          let res = json.reservations
+          res.sort((a, b) => {
+            return new Date(a.fromDate) - new Date(b.fromDate)
+          })
+          this.setState({
+            reservationsPast: this.state.reservationsPast.cloneWithRows(res)
+          })
+        })
+      } else {
+        console.log('past reservations getting error')
+      }
+      this.setState({ refreshing: false })
+    })
+  }
+
+  _getActualReservationsAsync = async () => {
+    this.setState({ refreshing: true })
+    const customerId = await AsyncStorage.getItem('id')
+
+    fetch(API.URL + '/customers/' + customerId + '/reservations/actual', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        response.json().then(json => {
+          let res = json.reservations
+          res.sort((a, b) => {
+            return new Date(a.fromDate) - new Date(b.fromDate)
+          })
+          this.setState({
+            reservationsActual: this.state.reservationsActual.cloneWithRows(
+              res
+            )
+          })
+        })
+      } else {
+        console.log('actual reservations getting error')
+      }
+      this.setState({ refreshing: false })
+    })
+  }
+
+  _getFutureReservationsAsync = async () => {
+    this.setState({ refreshing: true })
+    const customerId = await AsyncStorage.getItem('id')
+
+    fetch(API.URL + '/customers/' + customerId + '/reservations/future', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        response.json().then(json => {
+          let res = json.reservations
+          res.sort((a, b) => {
+            return new Date(a.fromDate) - new Date(b.fromDate)
+          })
+          this.setState({
+            reservationsFuture: this.state.reservationsFuture.cloneWithRows(
+              res
+            )
+          })
+        })
+      } else {
+        console.log('future reservations getting error')
+      }
+      this.setState({ refreshing: false })
+    })
+  }
+
+  renderRow (rowData, sectionID) {
+    const from = new Date(rowData.fromDate)
+    const to = new Date(rowData.toDate)
+    const date =
+      from.getDate().toString().padStart(2, '0') +
+      '.' +
+      (from.getMonth() + 1).toString().padStart(2, '0') +
+      ' - ' +
+      to.getDate().toString().padStart(2, '0') +
+      '.' +
+      (to.getMonth() + 1).toString().padStart(2, '0') +
+      '.' +
+      to.getFullYear()
+
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>
-          Reservations!
-        </Text>
-        <Button
-          title='Go to Details'
-          onPress={() => this.props.navigation.navigate('ReservationDetails')}
-        />
-      </View>
+      <ListItem
+        avatar={rowData.car.imageurl}
+        title={rowData.car.brand + ' ' + rowData.car.model + ' ' + rowData.id}
+        subtitle={date}
+        rightIcon={{ name: 'chevron-right' }}
+        onPress={() => {
+          this.props.navigation.navigate('ReservationDetails', {
+            reservationId: rowData.id
+          })
+        }}
+      />
     )
+  }
+
+  _onRefresh () {
+    this.setState({ refreshing: true })
+    this._getActualReservationsAsync()
+    this._getFutureReservationsAsync()
+    this._getPastReservationsAsync()
+  }
+
+  render () {
+    const state = this.state.refreshing
+    const pastCount = this.state.reservationsPast.getRowCount()
+    const actualCount = this.state.reservationsActual.getRowCount()
+    const futureCount = this.state.reservationsFuture.getRowCount()
+    const pastVisible = this.state.pastVisible
+    const actualVisible = this.state.actualVisible
+    const futureVisible = this.state.futureVisible
+    if (state === true) {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator />
+          <StatusBar barStyle='default' />
+        </View>
+      )
+    } else if (pastCount === 0 && actualCount === 0 && futureCount === 0) {
+      return (
+        <View style={styles.container}>
+          <Ionicons
+            name='ios-refresh-circle'
+            type='Ionicons'
+            size={100}
+            style={styles.logoIcon}
+            color={IosColors.SuperLightGray}
+            onPress={() => this._onRefresh()}
+          />
+          <Text>
+            You dont have reservations.
+          </Text>
+        </View>
+      )
+    } else {
+      return (
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+            />
+          }
+        >
+          {pastCount > 0
+            ? <View
+              backgroundColor='white'
+              style={{
+                marginTop: 16,
+                borderColor: IosColors.SuperLightGray
+              }}
+            >
+              <ListItem
+                key={'actuals'}
+                onPress={() => {
+                  this.setState({ pastVisible: !pastVisible })
+                }}
+                title={
+                  pastVisible
+                    ? 'Past reservations:'
+                    : pastCount + ' past reservations. (press to show)'
+                }
+                hideChevron
+              />
+              <ListView
+                dataSource={this.state.reservationsPast}
+                renderRow={this.renderRow}
+                enableEmptySections
+                style={{
+                  backgroundColor: 'rgb(216, 216, 216)',
+                  height: pastVisible ? 'auto' : 0
+                }}
+                type={'past'}
+                pointerEvents={'none'}
+              />
+            </View>
+            : <Text style={styles.listTitle}>
+                0 past reservations
+            </Text>}
+          {actualCount > 0
+            ? <View
+              backgroundColor='white'
+              style={{
+                marginTop: 16,
+                borderColor: IosColors.SuperLightGray
+              }}
+            >
+              <ListItem
+                key={'actuals'}
+                onPress={() => {
+                  this.setState({ actualVisible: !actualVisible })
+                }}
+                title={
+                  actualVisible
+                    ? 'Actual reservations:'
+                    : actualCount + ' actual reservations. (press to show)'
+                }
+                hideChevron
+              />
+              <ListView
+                dataSource={this.state.reservationsActual}
+                renderRow={this.renderRow}
+                enableEmptySections
+                style={{
+                  backgroundColor: 'rgb(239, 255, 206)',
+
+                  height: actualVisible ? 'auto' : 0
+                }}
+              />
+            </View>
+            : <Text style={styles.listTitle}>
+                0 actual reservations
+            </Text>}
+          {futureCount > 0
+            ? <View
+              backgroundColor='white'
+              style={{
+                marginTop: 16,
+                borderColor: IosColors.SuperLightGray
+              }}
+            >
+              <ListItem
+                key={'actuals'}
+                onPress={() => {
+                  this.setState({ futureVisible: !futureVisible })
+                }}
+                title={
+                  futureVisible
+                    ? 'Future reservations:'
+                    : futureCount + ' future reservations. (press to show)'
+                }
+                hideChevron
+              />
+              <ListView
+                dataSource={this.state.reservationsFuture}
+                renderRow={this.renderRow}
+                enableEmptySections
+                style={{
+                  backgroundColor: 'white',
+                  height: futureVisible ? 'auto' : 0
+                }}
+              />
+            </View>
+            : <Text style={styles.listTitle}>
+                0 future reservations
+            </Text>}
+        </ScrollView>
+      )
+    }
   }
 }

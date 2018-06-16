@@ -55,7 +55,7 @@ export default class CarReservationScreen extends Component {
       }),
       _reservedDays: {},
       _selectedDays: {},
-      loading: false
+      status: 'filling'
     }
 
     this._setReservedDates = this._setReservedDates.bind(this)
@@ -238,7 +238,7 @@ export default class CarReservationScreen extends Component {
   }
 
   onPressSave = async () => {
-    this.setState({ loading: true })
+    this.setState({ status: 'saving' })
     const selected = this.state._selectedDays
     const size = Object.keys(selected).length
     const keys = Object.keys(selected)
@@ -262,36 +262,65 @@ export default class CarReservationScreen extends Component {
           }
         }
       }
-      fromDate.setHours(6)
-      toDate.setHours(22)
+      fromDate = fromDate.toISOString()
+      fromDate = fromDate.substring(0, 10) + 'T06:00:00.000+02:00'
+      toDate = toDate.toISOString()
+      toDate = toDate.substring(0, 10) + 'T22:00:00.000+02:00'
       const carId = this.state.car.id
       const customerId = await AsyncStorage.getItem('id')
-      console.log(carId)
-      console.log(customerId)
-      console.log(fromDate.toISOString())
-      console.log(toDate.toISOString())
-      Alert.alert(
-        'Thank You !',
-        'Your reservation has been saved.',
-        [
-          {
-            text: 'Cars',
-            onPress: () => this.props.navigation.navigate('Cars')
-          },
-          {
-            text: 'Reservations',
-            onPress: () => {
-              this.props.navigation.navigate('Cars')
-              this.props.navigation.navigate('Reservations')
-            }
-          }
-        ],
-        {
-          cancelable: false
-        }
-      )
+
+      await this._postReservationAsync(customerId, carId, fromDate, toDate)
     }
-    this.setState({ loading: false })
+  }
+
+  _postReservationAsync = async (customerId, carId, from, to) => {
+    fetch(API.URL + '/reservations', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        car: { id: carId },
+        customer: { id: customerId },
+        fromDate: from,
+        toDate: to
+      })
+    }).then(response => {
+      if (response.status === 201) {
+        this.setState({ status: 'saved' })
+        Alert.alert(
+          'Thank You !',
+          "Your reservation has been saved.\nLet's go to:",
+          [
+            {
+              text: 'Cars',
+              onPress: () => this.props.navigation.navigate('Cars')
+            },
+            {
+              text: 'Reservations',
+              onPress: () => {
+                this.props.navigation.navigate('Cars')
+                this.props.navigation.navigate('Reservations')
+              }
+            }
+          ],
+          {
+            cancelable: false
+          }
+        )
+      } else {
+        this.setState({ status: 'filling' })
+        Alert.alert(
+          'Saving reservation failed',
+          'Reason: ' + response.headers.map.error + '\nTry again.',
+          [{ text: 'OK' }],
+          {
+            cancelable: false
+          }
+        )
+      }
+    })
   }
 
   render () {
@@ -314,13 +343,13 @@ export default class CarReservationScreen extends Component {
             hideChevron
           />
         </View>
-        {!this.state.loading
+        {this.state.status === 'filling'
           ? <View>
             <View
               style={{
                 marginBottom: 8
               }}
-              >
+            >
               <Text style={styles.listTitle}>Choose days:</Text>
               <CalendarList
                 horizontal
@@ -335,19 +364,19 @@ export default class CarReservationScreen extends Component {
                 theme={{
                   todayTextColor: '#00adf5'
                 }}
-                />
+              />
               <Text style={styles.information}>Yellow means RESERVED</Text>
             </View>
             <Text style={styles.listTitle}>
                 Total cost: {price} PLN / {days} days
-              </Text>
+            </Text>
             <View
               backgroundColor='white'
               style={{
                 marginVertical: 24
               }}
               pointerEvents={loading ? 'none' : 'auto'}
-              >
+            >
               <ListItem
                 key={'add'}
                 title={'Save Reservation'}
@@ -357,18 +386,24 @@ export default class CarReservationScreen extends Component {
                   color: IosColors.Red
                 }}
                 onPress={this.onPressSave}
-                />
+              />
             </View>
           </View>
-          : <View style={[styles.viewInView]}>
-            <Text style={styles.listTitle}>
-                Saving Your reservation. Please wait.
+          : this.state.status === 'saving'
+            ? <View style={[styles.viewInView]}>
+              <Text style={styles.listTitle}>
+                We are saving Your reservation. Please wait.
               </Text>
-            <ActivityIndicator
-              size='large'
-              style={styles.activityIndicator}
+              <ActivityIndicator
+                size='large'
+                style={styles.activityIndicator}
               />
-          </View>}
+            </View>
+            : <View style={[styles.viewInView]}>
+              <Text style={styles.listTitle}>
+                Success.
+              </Text>
+            </View>}
       </ScrollView>
     )
   }
