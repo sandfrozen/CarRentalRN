@@ -18,12 +18,12 @@ export default class AuthLoadingScreen extends React.Component {
 
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
-    const c1 = await AsyncStorage.getItem('c1')
-    const c2 = await AsyncStorage.getItem('c2')
-    const c3 = await AsyncStorage.getItem('c3')
-    const c4 = await AsyncStorage.getItem('c4')
+    const id = await AsyncStorage.getItem('id')
+    const ma = await AsyncStorage.getItem('ma')
+    const pa = await AsyncStorage.getItem('pa')
+    const lk = await AsyncStorage.getItem('lk')
 
-    if (!c1 || !c2 || !c3 || !c4) {
+    if (!id || !ma || !pa || !lk) {
       this.props.navigation.navigate('Auth')
     }
 
@@ -34,10 +34,10 @@ export default class AuthLoadingScreen extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: c1,
-        mail: c2,
-        password: c3,
-        loginKey: c4
+        id: id,
+        mail: ma,
+        password: pa,
+        loginKey: lk
       })
     })
       .then(response => {

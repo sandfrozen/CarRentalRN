@@ -157,10 +157,10 @@ class SignInScreen extends React.Component {
               id = json.id
               loginKey = json.loginKey
               if (id && loginKey) {
-                AsyncStorage.setItem('c1', id)
-                AsyncStorage.setItem('c2', this.state.mail)
-                AsyncStorage.setItem('c3', this.state.password)
-                AsyncStorage.setItem('c4', loginKey)
+                AsyncStorage.setItem('id', id)
+                AsyncStorage.setItem('ma', this.state.mail)
+                AsyncStorage.setItem('pa', this.state.password)
+                AsyncStorage.setItem('lk', loginKey)
               }
               this.setState({ loading: false })
               this.props.navigation.navigate('CarRentalStack')

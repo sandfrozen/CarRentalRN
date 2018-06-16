@@ -5,7 +5,9 @@ import {
   ScrollView,
   Alert,
   Dimensions,
-  ListView
+  ListView,
+  AsyncStorage,
+  ActivityIndicator
 } from 'react-native'
 import { ListItem } from 'react-native-elements'
 import API from '../../API'
@@ -52,7 +54,8 @@ export default class CarReservationScreen extends Component {
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
       _reservedDays: {},
-      _selectedDays: {}
+      _selectedDays: {},
+      loading: false
     }
 
     this._setReservedDates = this._setReservedDates.bind(this)
@@ -234,7 +237,8 @@ export default class CarReservationScreen extends Component {
     }
   }
 
-  onPressSave = () => {
+  onPressSave = async () => {
+    this.setState({ loading: true })
     const selected = this.state._selectedDays
     const size = Object.keys(selected).length
     const keys = Object.keys(selected)
@@ -243,15 +247,51 @@ export default class CarReservationScreen extends Component {
     let toDate
 
     if (size > 0) {
-      fromDate = keys[0]
-      toDate = keys[0]
+      fromDate = new Date(keys[0])
+      toDate = new Date(keys[0])
       if (size === 1) {
         // it is okay one day
       } else {
-        // for()
+        for (let i = 1; i < size; i++) {
+          let tmpDate = new Date(keys[i])
+
+          if (tmpDate < fromDate) {
+            fromDate = tmpDate
+          } else if (tmpDate > toDate) {
+            toDate = tmpDate
+          }
+        }
       }
-      console.log(fromDate)
+      fromDate.setHours(6)
+      toDate.setHours(22)
+      const carId = this.state.car.id
+      const customerId = await AsyncStorage.getItem('id')
+      console.log(carId)
+      console.log(customerId)
+      console.log(fromDate.toISOString())
+      console.log(toDate.toISOString())
+      Alert.alert(
+        'Thank You !',
+        'Your reservation has been saved.',
+        [
+          {
+            text: 'Cars',
+            onPress: () => this.props.navigation.navigate('Cars')
+          },
+          {
+            text: 'Reservations',
+            onPress: () => {
+              this.props.navigation.navigate('Cars')
+              this.props.navigation.navigate('Reservations')
+            }
+          }
+        ],
+        {
+          cancelable: false
+        }
+      )
     }
+    this.setState({ loading: false })
   }
 
   render () {
@@ -259,6 +299,8 @@ export default class CarReservationScreen extends Component {
     const { width } = Dimensions.get('window')
     const loading = this.state.car.id === 0
     const marked = { ...this.state._reservedDays, ...this.state._selectedDays }
+    const days = Object.keys(this.state._selectedDays).length
+    const price = (this.state.car.daycost * days).toFixed(2)
     return (
       <ScrollView>
         <Text style={styles.listTitle}>
@@ -272,46 +314,61 @@ export default class CarReservationScreen extends Component {
             hideChevron
           />
         </View>
-        <View
-          style={{
-            marginBottom: 8
-          }}
-        >
-          <Text style={styles.listTitle}>Choose days:</Text>
-          <CalendarList
-            horizontal
-            calendarWidth={width}
-            firstDay={1}
-            scrollEnabled
-            pastScrollRange={0}
-            pagingEnabled
-            markedDates={marked}
-            onDayPress={this.onDayPress}
-            markingType='period'
-            theme={{
-              todayTextColor: '#00adf5'
-            }}
-          />
-          <Text style={styles.information}>Yellow means RESERVED</Text>
-        </View>
-        <View
-          backgroundColor='white'
-          style={{
-            marginVertical: 24
-          }}
-          pointerEvents={loading ? 'none' : 'auto'}
-        >
-          <ListItem
-            key={'add'}
-            title={'Save Reservation'}
-            hideChevron
-            titleStyle={{
-              textAlign: 'center',
-              color: IosColors.Red
-            }}
-            onPress={this.onPressSave}
-          />
-        </View>
+        {!this.state.loading
+          ? <View>
+            <View
+              style={{
+                marginBottom: 8
+              }}
+              >
+              <Text style={styles.listTitle}>Choose days:</Text>
+              <CalendarList
+                horizontal
+                calendarWidth={width}
+                firstDay={1}
+                scrollEnabled
+                pastScrollRange={0}
+                pagingEnabled
+                markedDates={marked}
+                onDayPress={this.onDayPress}
+                markingType='period'
+                theme={{
+                  todayTextColor: '#00adf5'
+                }}
+                />
+              <Text style={styles.information}>Yellow means RESERVED</Text>
+            </View>
+            <Text style={styles.listTitle}>
+                Total cost: {price} PLN / {days} days
+              </Text>
+            <View
+              backgroundColor='white'
+              style={{
+                marginVertical: 24
+              }}
+              pointerEvents={loading ? 'none' : 'auto'}
+              >
+              <ListItem
+                key={'add'}
+                title={'Save Reservation'}
+                hideChevron
+                titleStyle={{
+                  textAlign: 'center',
+                  color: IosColors.Red
+                }}
+                onPress={this.onPressSave}
+                />
+            </View>
+          </View>
+          : <View style={[styles.viewInView]}>
+            <Text style={styles.listTitle}>
+                Saving Your reservation. Please wait.
+              </Text>
+            <ActivityIndicator
+              size='large'
+              style={styles.activityIndicator}
+              />
+          </View>}
       </ScrollView>
     )
   }

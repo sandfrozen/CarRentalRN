@@ -163,7 +163,7 @@ export default class CarDetailsScreen extends Component {
           <ListItem
             leftIcon={{ name: 'check' }}
             key={'price'}
-            title={car['daycost'].toFixed(2) + '  pln / day'}
+            title={car['daycost'].toFixed(2) + '  PLN / day'}
             hideChevron
           />
         </View>
