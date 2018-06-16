@@ -15,7 +15,7 @@ import { CalendarList } from 'react-native-calendars'
 import styles from '../../styles.js'
 
 const reservedColor = IosColors.OrangeLight
-const choosedColor = IosColors.Green
+const selectedColor = IosColors.Green
 
 export default class CarReservationScreen extends Component {
   static navigationOptions = {
@@ -51,16 +51,11 @@ export default class CarReservationScreen extends Component {
       reservations: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       }),
-      _markedDates: {
-        '2018-06-06': {
-          color: IosColors.Red,
-          startingDay: true,
-          endingDay: true
-        }
-      }
+      _reservedDays: {},
+      _selectedDays: {}
     }
 
-    this.markedDates = this.markedDates.bind(this)
+    this._setReservedDates = this._setReservedDates.bind(this)
   }
 
   componentDidMount () {
@@ -115,7 +110,7 @@ export default class CarReservationScreen extends Component {
               )
             },
             () => {
-              this.markedDates()
+              this._setReservedDates()
             }
           )
         })
@@ -125,17 +120,17 @@ export default class CarReservationScreen extends Component {
     })
   }
 
-  markedDates () {
-    let marks = { '': {} }
-    let res = this.state.reservations
+  _setReservedDates = async () => {
+    let reservedDays = { '': {} }
+    let reservations = this.state.reservations
 
-    for (let i = 0; i < res.getRowCount(); i++) {
+    for (let i = 0; i < reservations.getRowCount(); i++) {
       // prepare dates
-      let from = new Date(res.getRowData(0, i).fromDate)
+      let from = new Date(reservations.getRowData(0, i).fromDate)
       from = new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1)
         .toISOString()
         .substring(0, 10)
-      let to = new Date(res.getRowData(0, i).toDate)
+      let to = new Date(reservations.getRowData(0, i).toDate)
       to = new Date(to.getFullYear(), to.getMonth(), to.getDate() + 1)
         .toISOString()
         .substring(0, 10)
@@ -147,13 +142,13 @@ export default class CarReservationScreen extends Component {
       let last = to.toISOString().substring(0, 10)
 
       if (first === last) {
-        marks[first] = {
+        reservedDays[first] = {
           color: reservedColor,
           startingDay: true,
           endingDay: true
         }
       } else {
-        marks[first] = {
+        reservedDays[first] = {
           color: reservedColor,
           startingDay: true
         }
@@ -166,52 +161,104 @@ export default class CarReservationScreen extends Component {
           )
           let date = from.toISOString().substring(0, 10)
 
-          marks[date] = {
+          reservedDays[date] = {
             color: reservedColor
           }
         }
 
-        marks[last] = {
+        reservedDays[last] = {
           color: reservedColor,
           endingDay: true
         }
       }
     }
 
-    const updatedMarkedDates = marks
-    this.setState({ _markedDates: updatedMarkedDates })
+    const updatedReservedDates = reservedDays
+    this.setState({ _reservedDays: updatedReservedDates })
   }
 
-  onDaySelect = day => {
+  onDayPress = day => {
     let _selectedDay = day.dateString
-    let color = ''
 
-    let choosedDay = this.state._markedDates[_selectedDay]
-    if (choosedDay === undefined || choosedDay.color === undefined) {
-      console.log('free')
-      color = choosedColor
-      const updatedMarkedDates = {
-        ...this.state._markedDates,
-        ...{
-          [_selectedDay]: { color: color, startingDay: true, endingDay: true }
+    let isFree = this.state._reservedDays[_selectedDay] === undefined
+    if (isFree) {
+      let now = new Date()
+      let selectedDate = new Date(_selectedDay)
+      if (selectedDate > now) {
+        let choosedDay = this.state._selectedDays[_selectedDay]
+
+        if (choosedDay === undefined || choosedDay.color === undefined) {
+          console.log('free')
+          const updatedSelectedDays = {
+            ...this.state._selectedDays,
+            ...{
+              [_selectedDay]: {
+                color: selectedColor,
+                startingDay: true,
+                endingDay: true
+              }
+            }
+          }
+          this.setState({ _selectedDays: updatedSelectedDays }, () =>
+            console.log(this.state._selectedDays)
+          )
+        } else {
+          console.log('choosed')
+          let dates = this.state._selectedDays
+          delete dates[_selectedDay]
+
+          const updatedSelectedDays = { ...dates }
+          this.setState({ _selectedDays: updatedSelectedDays }, () =>
+            console.log(this.state._selectedDays)
+          )
         }
+      } else {
+        Alert.alert(
+          'This day is unavailable.',
+          'Select future day.',
+          [{ text: 'OK' }],
+          {
+            cancelable: false
+          }
+        )
       }
-      this.setState({ _markedDates: updatedMarkedDates })
-    } else if (choosedDay.color === choosedColor) {
-      console.log('choosed')
-      let dates = this.state._markedDates
-      delete dates[_selectedDay]
-
-      const updatedMarkedDates = { ...dates }
-      this.setState({ _markedDates: updatedMarkedDates })
+    } else {
+      Alert.alert(
+        'This day is unavailable',
+        'Select free day',
+        [{ text: 'OK' }],
+        {
+          cancelable: false
+        }
+      )
     }
-    console.log(this.state._markedDates)
+  }
+
+  onPressSave = () => {
+    const selected = this.state._selectedDays
+    const size = Object.keys(selected).length
+    const keys = Object.keys(selected)
+
+    let fromDate
+    let toDate
+
+    if (size > 0) {
+      fromDate = keys[0]
+      toDate = keys[0]
+      if (size === 1) {
+        // it is okay one day
+      } else {
+        // for()
+      }
+      console.log(fromDate)
+    }
   }
 
   render () {
     const car = this.state.car
     const { width } = Dimensions.get('window')
     const loading = this.state.car.id === 0
+    const marked = { ...this.state._reservedDays, ...this.state._selectedDays }
     return (
       <ScrollView>
         <Text style={styles.listTitle}>
@@ -230,7 +277,7 @@ export default class CarReservationScreen extends Component {
             marginBottom: 8
           }}
         >
-          <Text style={styles.listTitle}>Choose dates:</Text>
+          <Text style={styles.listTitle}>Choose days:</Text>
           <CalendarList
             horizontal
             calendarWidth={width}
@@ -238,8 +285,8 @@ export default class CarReservationScreen extends Component {
             scrollEnabled
             pastScrollRange={0}
             pagingEnabled
-            markedDates={this.state._markedDates}
-            onDayPress={this.onDaySelect}
+            markedDates={marked}
+            onDayPress={this.onDayPress}
             markingType='period'
             theme={{
               todayTextColor: '#00adf5'
@@ -262,9 +309,7 @@ export default class CarReservationScreen extends Component {
               textAlign: 'center',
               color: IosColors.Red
             }}
-            onPress={() => {
-              this.props.navigation.goBack()
-            }}
+            onPress={this.onPressSave}
           />
         </View>
       </ScrollView>
