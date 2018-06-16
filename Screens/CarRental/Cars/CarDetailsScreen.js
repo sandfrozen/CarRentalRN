@@ -5,14 +5,12 @@ import {
   Image,
   ScrollView,
   ListView,
-  Dimensions,
   Alert
 } from 'react-native'
 import { ListItem } from 'react-native-elements'
 import styles from '../../styles.js'
 import IosColors from '../../colors.js'
 import API from '../../API'
-import { CalendarList } from 'react-native-calendars'
 
 export default class CarDetailsScreen extends Component {
   static navigationOptions = {

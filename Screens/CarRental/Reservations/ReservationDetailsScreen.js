@@ -10,20 +10,32 @@ import {
   Button,
   ScrollView,
   Image,
-  Alert
+  Alert,
+  AlertIOS
 } from 'react-native'
 import styles from '../../styles.js'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { ListItem, ButtonGroup } from 'react-native-elements'
+import { ListItem, Icon } from 'react-native-elements'
 import IosColors from '../../colors.js'
 import API from '../../API'
 
-const buttonsHeight = 40
-
 export default class ReservationDetailsScreen extends Component {
-  static navigationOptions = {
-    title: 'Details'
+  static navigationOptions = ({ navigation, navigationOptions }) => {
+    return {
+      title: 'Details',
+      headerRight: (
+        <Icon
+          name='ios-trash-outline'
+          type='ionicon'
+          color={IosColors.Blue}
+          size={28}
+          containerStyle={{ padding: 8, paddingRight: 16 }}
+          onPress={navigation.getParam('increaseCount')}
+        />
+      )
+    }
   }
+
   constructor (props) {
     super(props)
 
@@ -37,7 +49,45 @@ export default class ReservationDetailsScreen extends Component {
   }
 
   componentDidMount () {
+    this.props.navigation.setParams({ increaseCount: this._increaseCount })
     this._getReservationAsync()
+  }
+
+  _increaseCount = () => {
+    AlertIOS.alert('Delete this reservation?', '', [
+      {
+        text: 'Cancel',
+        style: 'cancel'
+      },
+      {
+        text: 'Delete',
+        onPress: () => this._deleteReservation(),
+        style: 'destructive'
+      }
+    ])
+  }
+
+  _deleteReservation = () => {
+    fetch(API.URL + '/reservations/' + this.state.id, {
+      method: 'DELETE'
+    })
+      .then(response => {
+        if (response.status === 204) {
+          this.props.navigation.state.params.ReservationsScreen._onRefresh()
+          this.props.navigation.goBack()
+        } else {
+          Alert.alert('Connection problem', '', [{ text: 'OK' }], {
+            cancelable: false
+          })
+        }
+      })
+      .catch(() => {
+        Alert.alert('Connection problem', '', [{ text: 'OK' }], {
+          cancelable: false
+        })
+        this.props.navigation.state.params.ReservationsScreen._onRefresh()
+        this.props.navigation.goBack()
+      })
   }
 
   _getReservationAsync = async () => {
@@ -69,10 +119,6 @@ export default class ReservationDetailsScreen extends Component {
         })
         this.props.navigation.goBack()
       })
-  }
-
-  deleteReservation = () => {
-    console.log('delete')
   }
 
   editReservation = () => {
@@ -116,100 +162,73 @@ export default class ReservationDetailsScreen extends Component {
         '.' +
         to.getFullYear()
 
-      const component1 = () => (
-        <Text style={{ color: IosColors.Red, fontWeight: 'bold',  }}>Delete</Text>
-      )
-      const component2 = () => (
-        <Text style={{ color: IosColors.Blue, fontWeight: '600' }}>Edit</Text>
-      )
-      const buttons = [{ element: component1 }, { element: component2 }]
       return (
-        <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <ScrollView style={{ width: '100%', marginBottom: buttonsHeight }}>
-            <View
-              backgroundColor='white'
-              style={{
-                marginBottom: 16,
-                borderColor: IosColors.SuperLightGray
-              }}
-            >
-              <ListItem
-                leftIcon={{ name: 'directions-car' }}
-                key={'brand'}
-                title={
-                  car['brand'] + ' ' + car['model'] + ' ' + car['yearprod']
-                }
-                hideChevron
-              />
-              <Image
-                source={{ uri: car.imageurl }}
-                style={{
-                  width: '100%',
-                  height: 100,
-                  backgroundColor: 'white'
-                }}
-                resizeMode='contain'
-              />
-            </View>
-            <Button
-              title='Show car details'
-              onPress={() => {
-                this.props.navigation.navigate('CarDetails', {
-                  id: car.id
-                })
-              }}
-            />
-            <View
-              backgroundColor='white'
-              style={{
-                marginTop: 16,
-                borderColor: IosColors.SuperLightGray
-              }}
-            >
-              <ListItem
-                leftIcon={{ name: 'attach-money' }}
-                key={'cost'}
-                title={cost + '  PLN / ' + i + ' days'}
-                hideChevron
-              />
-              <ListItem
-                leftIcon={{ name: 'keyboard-arrow-right' }}
-                key={'from'}
-                title={'From day: ' + from}
-                hideChevron
-              />
-              <ListItem
-                leftIcon={{ name: 'keyboard-arrow-left' }}
-                key={'to'}
-                title={'To day: ' + to}
-                hideChevron
-              />
-            </View>
-          </ScrollView>
-          <ButtonGroup
-            buttons={buttons}
-            containerStyle={{
-              height: buttonsHeight,
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: 0,
-              marginLeft: 0,
-              marginBottom: 0,
-              marginRight: 0,
-              marginTop: 0
+        <ScrollView>
+          <View
+            backgroundColor='white'
+            style={{
+              borderColor: IosColors.SuperLightGray
             }}
-            onPress={index => {
-              if (index === 0) {
-                this.deleteReservation()
-              } else if (index === 1) {
-                this.editReservation()
-              }
+          >
+            <ListItem
+              leftIcon={{ name: 'directions-car' }}
+              key={'brand'}
+              title={car['brand'] + ' ' + car['model'] + ' ' + car['yearprod']}
+              hideChevron
+            />
+            <Image
+              source={{ uri: car.imageurl }}
+              style={{
+                width: '100%',
+                height: 100,
+                backgroundColor: 'white'
+              }}
+              resizeMode='contain'
+            />
+          </View>
+          <Button
+            title='Show car details'
+            onPress={() => {
+              this.props.navigation.navigate('CarDetails', {
+                id: car.id
+              })
             }}
           />
-        </View>
+          <View
+            backgroundColor='white'
+            style={{
+              marginTop: 16,
+              borderColor: IosColors.SuperLightGray
+            }}
+          >
+            <ListItem
+              leftIcon={{ name: 'attach-money' }}
+              key={'cost'}
+              title={cost + '  PLN / ' + i + ' days'}
+              hideChevron
+            />
+            <ListItem
+              leftIcon={{ name: 'keyboard-arrow-right' }}
+              key={'from'}
+              title={'From day: ' + from}
+              hideChevron
+            />
+            <ListItem
+              leftIcon={{ name: 'keyboard-arrow-left' }}
+              key={'to'}
+              title={'To day: ' + to}
+              hideChevron
+            />
+          </View>
+          <Button
+            title='Edit reservation'
+            onPress={() => {
+              this.props.navigation.navigate('CarDetails', {
+                id: car.id
+              })
+            }}
+          />
+        </ScrollView>
       )
     }
   }

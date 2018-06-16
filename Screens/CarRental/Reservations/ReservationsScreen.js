@@ -154,7 +154,8 @@ export default class ReservationsScreen extends Component {
         rightIcon={{ name: 'chevron-right' }}
         onPress={() => {
           this.props.navigation.navigate('ReservationDetails', {
-            reservationId: rowData.id
+            reservationId: rowData.id,
+            ReservationsScreen: this
           })
         }}
       />
@@ -173,9 +174,9 @@ export default class ReservationsScreen extends Component {
     const pastCount = this.state.reservationsPast.getRowCount()
     const actualCount = this.state.reservationsActual.getRowCount()
     const futureCount = this.state.reservationsFuture.getRowCount()
-    const pastVisible = this.state.pastVisible
-    const actualVisible = this.state.actualVisible
-    const futureVisible = this.state.futureVisible
+    // const pastVisible = this.state.pastVisible
+    // const actualVisible = this.state.actualVisible
+    // const futureVisible = this.state.futureVisible
     if (state === true) {
       return (
         <View style={styles.container}>
@@ -209,108 +210,73 @@ export default class ReservationsScreen extends Component {
             />
           }
         >
-          {pastCount > 0
-            ? <View
-              backgroundColor='white'
-              style={{
-                marginTop: 16,
-                borderColor: IosColors.SuperLightGray
-              }}
-            >
-              <ListItem
-                key={'actuals'}
-                onPress={() => {
-                  this.setState({ pastVisible: !pastVisible })
-                }}
-                title={
-                  pastVisible
-                    ? 'Past reservations:'
-                    : pastCount + ' past reservations. (press to show)'
-                }
-                hideChevron
-              />
-              <ListView
+          <View
+            backgroundColor='white'
+            style={{
+              marginTop: 16,
+              borderColor: IosColors.SuperLightGray
+            }}
+          >
+            <ListItem
+              key={'actuals'}
+              title={'Past reservations: ' + pastCount}
+              hideChevron
+            />
+            {pastCount > 0
+              ? <ListView
                 dataSource={this.state.reservationsPast}
                 renderRow={this.renderRow}
                 enableEmptySections
-                style={{
-                  backgroundColor: 'rgb(216, 216, 216)',
-                  height: pastVisible ? 'auto' : 0
-                }}
+                style={{ backgroundColor: 'rgb(216, 216, 216)' }}
                 type={'past'}
                 pointerEvents={'none'}
               />
-            </View>
-            : <Text style={styles.listTitle}>
-                0 past reservations
-            </Text>}
-          {actualCount > 0
-            ? <View
-              backgroundColor='white'
-              style={{
-                marginTop: 16,
-                borderColor: IosColors.SuperLightGray
-              }}
-            >
-              <ListItem
-                key={'actuals'}
-                onPress={() => {
-                  this.setState({ actualVisible: !actualVisible })
-                }}
-                title={
-                  actualVisible
-                    ? 'Actual reservations:'
-                    : actualCount + ' actual reservations. (press to show)'
-                }
-                hideChevron
-              />
-              <ListView
+              : null}
+          </View>
+          <View
+            backgroundColor='white'
+            style={{
+              marginTop: 16,
+              borderColor: IosColors.SuperLightGray
+            }}
+          >
+            <ListItem
+              key={'actuals'}
+              title={'Actual reservations: ' + actualCount}
+              hideChevron
+            />
+            {actualCount > 0
+              ? <ListView
                 dataSource={this.state.reservationsActual}
                 renderRow={this.renderRow}
                 enableEmptySections
-                style={{
-                  backgroundColor: 'rgb(239, 255, 206)',
-
-                  height: actualVisible ? 'auto' : 0
-                }}
+                style={{ backgroundColor: 'rgb(226, 243, 255)' }}
+                type={'actual'}
               />
-            </View>
-            : <Text style={styles.listTitle}>
-                0 actual reservations
-            </Text>}
-          {futureCount > 0
-            ? <View
-              backgroundColor='white'
-              style={{
-                marginTop: 16,
-                borderColor: IosColors.SuperLightGray
-              }}
-            >
-              <ListItem
-                key={'actuals'}
-                onPress={() => {
-                  this.setState({ futureVisible: !futureVisible })
-                }}
-                title={
-                  futureVisible
-                    ? 'Future reservations:'
-                    : futureCount + ' future reservations. (press to show)'
-                }
-                hideChevron
-              />
-              <ListView
+              : null}
+          </View>
+          <View
+            backgroundColor='white'
+            style={{
+              marginTop: 16,
+              borderColor: IosColors.SuperLightGray
+            }}
+          >
+            <ListItem
+              key={'actuals'}
+              title={'Future reservations: ' + futureCount}
+              hideChevron
+            />
+            {futureCount > 0
+              ? <ListView
                 dataSource={this.state.reservationsFuture}
                 renderRow={this.renderRow}
                 enableEmptySections
-                style={{
-                  backgroundColor: 'white',
-                  height: futureVisible ? 'auto' : 0
-                }}
+                style={{ backgroundColor: 'white' }}
+                type={'future'}
               />
-            </View>
-            : <Text style={styles.listTitle}>
-                0 future reservations
-            </Text>}
+              : null}
+          </View>
         </ScrollView>
       )
     }

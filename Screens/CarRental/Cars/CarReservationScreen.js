@@ -349,7 +349,7 @@ export default class CarReservationScreen extends Component {
               style={{
                 marginBottom: 8
               }}
-            >
+              >
               <Text style={styles.listTitle}>Choose days:</Text>
               <CalendarList
                 horizontal
@@ -364,19 +364,19 @@ export default class CarReservationScreen extends Component {
                 theme={{
                   todayTextColor: '#00adf5'
                 }}
-              />
+                />
               <Text style={styles.information}>Yellow means RESERVED</Text>
             </View>
             <Text style={styles.listTitle}>
                 Total cost: {price} PLN / {days} days
-            </Text>
+              </Text>
             <View
               backgroundColor='white'
               style={{
                 marginVertical: 24
               }}
               pointerEvents={loading ? 'none' : 'auto'}
-            >
+              >
               <ListItem
                 key={'add'}
                 title={'Save Reservation'}
@@ -386,24 +386,24 @@ export default class CarReservationScreen extends Component {
                   color: IosColors.Red
                 }}
                 onPress={this.onPressSave}
-              />
+                />
             </View>
           </View>
           : this.state.status === 'saving'
-            ? <View style={[styles.viewInView]}>
-              <Text style={styles.listTitle}>
-                We are saving Your reservation. Please wait.
-              </Text>
-              <ActivityIndicator
-                size='large'
-                style={styles.activityIndicator}
-              />
-            </View>
-            : <View style={[styles.viewInView]}>
-              <Text style={styles.listTitle}>
-                Success.
-              </Text>
-            </View>}
+              ? <View style={[styles.viewInView]}>
+                <Text style={styles.listTitle}>
+                    We are saving Your reservation. Please wait.
+                  </Text>
+                <ActivityIndicator
+                  size='large'
+                  style={styles.activityIndicator}
+                  />
+              </View>
+              : <View style={[styles.viewInView]}>
+                <Text style={styles.listTitle}>
+                    Success.
+                  </Text>
+              </View>}
       </ScrollView>
     )
   }
