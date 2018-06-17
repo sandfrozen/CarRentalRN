@@ -299,7 +299,14 @@ export default class CarReservationScreen extends Component {
       const customerId = await AsyncStorage.getItem('id')
       const cost = (i * this.state.car.daycost).toFixed(2)
 
-      await this._postReservationAsync(customerId, carId, fromDate, toDate, cost, i)
+      await this._postReservationAsync(
+        customerId,
+        carId,
+        fromDate,
+        toDate,
+        cost,
+        i
+      )
     }
   }
 

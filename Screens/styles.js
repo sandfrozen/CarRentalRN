@@ -2,6 +2,30 @@ import { StyleSheet } from 'react-native'
 import IosColors from './colors.js'
 
 const styles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingTop: 13,
+    paddingHorizontal: 10,
+    paddingBottom: 12,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    backgroundColor: 'white',
+    color: 'black'
+  },
+  miniColumn: {
+    width: '50%',
+    padding: 8
+  },
+  miniRow: {
+    flex: 1,
+    alignItems: 'stretch',
+    flexDirection: 'row',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    borderBottomColor: IosColors.LightGray,
+    borderBottomWidth: 1
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -28,6 +52,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     textAlignVertical: 'center',
+    backgroundColor: 'white',
+    marginVertical: 8,
+    marginHorizontal: 16
+  },
+  input50: {
+    borderWidth: 1,
+    borderRadius: 6,
+    width: '100%',
+    height: 40,
+    borderColor: IosColors.SuperLightGray,
     backgroundColor: 'white',
     marginVertical: 8,
     marginHorizontal: 16

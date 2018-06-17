@@ -52,31 +52,9 @@ export default class CarsScreen extends Component {
     })
   }
 
-  _getCarsAsyncWithParams = async (params) => {
+  _getCarsAsync = async params => {
     this.setState({ refreshing: true })
-    fetch(API.URL + '/cars' + params, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(response => {
-      if (response.status === 200) {
-        response.json().then(json => {
-          this.setState({
-            carsList: this.state.carsList.cloneWithRows(json.cars)
-          })
-        })
-      } else {
-        console.log('cars getting error')
-      }
-      this.setState({ refreshing: false })
-    })
-  }
-
-  _getCarsAsync = async () => {
-    this.setState({ refreshing: true })
-    fetch(API.URL + '/cars', {
+    fetch(API.URL + '/cars' + (params === undefined ? '' : params), {
       method: 'GET',
       headers: {
         Accept: 'application/json',

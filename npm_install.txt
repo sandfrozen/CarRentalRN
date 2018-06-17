@@ -16,4 +16,9 @@ npm i react-native-keyboard-aware-scroll-view --save
 
 npm install --save react-native-calendars
 
-npm i react-native-chooser --save
+//npm i react-native-chooser --save
+
+//npm install react-native-picker --save
+//react-native link
+
+npm install react-native-picker-select
