@@ -1,11 +1,13 @@
 import { createStackNavigator } from 'react-navigation'
 import ReservationsScreen from './ReservationsScreen.js'
 import ReservationDetailsScreen from './ReservationDetailsScreen.js'
+import EditReservationScreen from './EditReservationScreen.js'
 
 const ReservationsStack = createStackNavigator(
   {
     Reservations: ReservationsScreen,
-    ReservationDetails: ReservationDetailsScreen
+    ReservationDetails: ReservationDetailsScreen,
+    EditReservation: EditReservationScreen
   },
   {
     initialRouteName: 'Reservations',

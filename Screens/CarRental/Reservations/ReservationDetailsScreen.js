@@ -14,7 +14,6 @@ import {
   AlertIOS
 } from 'react-native'
 import styles from '../../styles.js'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import { ListItem, Icon } from 'react-native-elements'
 import IosColors from '../../colors.js'
 import API from '../../API'
@@ -140,10 +139,6 @@ export default class ReservationDetailsScreen extends Component {
       })
   }
 
-  editReservation = () => {
-    console.log('edit')
-  }
-
   render () {
     const loading = this.state.reservation === undefined
     if (loading) {
@@ -250,8 +245,10 @@ export default class ReservationDetailsScreen extends Component {
             title='Edit reservation'
             disabled={actual}
             onPress={() => {
-              this.props.navigation.navigate('CarDetails', {
-                id: car.id
+              this.props.navigation.navigate('EditReservation', {
+                reservation: this.state.reservation,
+                car: this.state.reservation.car,
+                ReservationDetails: this
               })
             }}
           />

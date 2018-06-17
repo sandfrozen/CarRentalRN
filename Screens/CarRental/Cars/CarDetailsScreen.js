@@ -91,10 +91,10 @@ export default class CarDetailsScreen extends Component {
               backgroundColor: 'white'
             }}
             resizeMode='contain'
-            />
+          />
           : <Text style={styles.listTitle}>
               Loading car...
-            </Text>}
+          </Text>}
         <View
           backgroundColor='white'
           style={{
@@ -112,8 +112,9 @@ export default class CarDetailsScreen extends Component {
               color: IosColors.Blue
             }}
             onPress={() => {
-              this.props.navigation.navigate('NewReservation', {
-                id: car.id
+              this.props.navigation.navigate('EditReservation', {
+                car: car,
+                reservation: { id: 0 }
               })
             }}
           />

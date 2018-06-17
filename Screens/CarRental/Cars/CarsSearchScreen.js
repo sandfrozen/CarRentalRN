@@ -3,9 +3,7 @@ import {
   View,
   Button,
   ScrollView,
-  KeyboardAvoidingView,
   Text,
-  TextInput,
   StyleSheet,
   Alert,
   Dimensions

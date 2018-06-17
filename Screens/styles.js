@@ -164,13 +164,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 1
   },
-  information: {
+  informationReserved: {
     backgroundColor: 'white',
     padding: 8,
     paddingLeft: 12,
     fontWeight: 'bold',
     letterSpacing: 1,
     color: IosColors.OrangeLight
+  },
+  informationActual: {
+    backgroundColor: 'white',
+    padding: 8,
+    paddingLeft: 12,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+    color: IosColors.LightGray
+  },
+  informationChoosed: {
+    backgroundColor: 'white',
+    padding: 8,
+    paddingLeft: 12,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+    color: IosColors.Green
   },
   buttonOption: {
     textAlign: 'left',
