@@ -14,6 +14,8 @@ import styles from '../../styles'
 import RNPickerSelect from 'react-native-picker-select'
 import IosColors from '../../colors'
 import { CalendarList } from 'react-native-calendars'
+import API from '../../API'
+
 const selectedColor = IosColors.Green
 
 export default class CarsSearchScreen extends Component {
@@ -178,6 +180,98 @@ export default class CarsSearchScreen extends Component {
       ]
     }
     this.inputRefs = {}
+  }
+
+  componentDidMount () {
+    this._getCarsAsync()
+  }
+
+  _getCarsAsync = async () => {
+    fetch(API.URL + '/cars', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        response.json().then(json => {
+          this.setState(
+            {
+              cars: json.cars
+            },
+            () => this.setArrays()
+          )
+        })
+      } else {
+        console.log('cars getting error')
+      }
+      this.setState({ refreshing: false })
+    })
+  }
+
+  setArrays () {
+    const cars = this.state.cars
+    console.log(cars)
+    let brands = []
+    let models = []
+    let colors = []
+    let drives = []
+    let years = []
+    let fuelcaps = []
+    let boots = []
+    let ranges = []
+    let doors = []
+    let gears = []
+    let dayCosts = []
+    for (let c in cars) {
+      brands.push({ value: cars[c].brand, label: cars[c].brand })
+      models.push({ value: cars[c].model, label: cars[c].model })
+      colors.push({ value: cars[c].color, label: cars[c].color })
+      drives.push({ value: cars[c].drive, label: cars[c].drive })
+      years.push({
+        value: cars[c].yearprod.toString(),
+        label: cars[c].yearprod.toString()
+      })
+      fuelcaps.push({
+        value: cars[c].fuelcap.toString(),
+        label: cars[c].fuelcap.toString()
+      })
+      boots.push({
+        value: cars[c].boot.toString(),
+        label: cars[c].boot.toString()
+      })
+      ranges.push({
+        value: cars[c].range.toString(),
+        label: cars[c].range.toString()
+      })
+      doors.push({
+        value: cars[c].doors.toString(),
+        label: cars[c].doors.toString()
+      })
+      gears.push({
+        value: cars[c].gears.toString(),
+        label: cars[c].gears.toString()
+      })
+      dayCosts.push({
+        value: cars[c].daycost.toString(),
+        label: cars[c].daycost.toString()
+      })
+    }
+
+    this.setState({
+      brands: brands,
+      models: models,
+      colors: colors,
+      drives: drives,
+      years: years,
+      fuelcaps: fuelcaps,
+      boots: boots,
+      ranges: ranges,
+      doors: doors,
+      gears: gears,
+      dayCosts: dayCosts
+    })
   }
 
   onSelect (value, label) {
