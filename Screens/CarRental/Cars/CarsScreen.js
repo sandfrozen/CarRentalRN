@@ -5,7 +5,8 @@ import {
   ActivityIndicator,
   StatusBar,
   ListView,
-  RefreshControl
+  RefreshControl,
+  Alert
 } from 'react-native'
 import styles from '../../styles.js'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -63,9 +64,27 @@ export default class CarsScreen extends Component {
     }).then(response => {
       if (response.status === 200) {
         response.json().then(json => {
-          this.setState({
-            carsList: this.state.carsList.cloneWithRows(json.cars)
-          })
+          this.setState(
+            {
+              carsList: this.state.carsList.cloneWithRows(json.cars)
+            },
+            () => {
+              if (params !== undefined) {
+                Alert.alert(
+                  'Searing result:',
+                  this.state.carsList.getRowCount() + ' cars found',
+                  [
+                    {
+                      text: 'Ok'
+                    }
+                  ],
+                  {
+                    cancelable: false
+                  }
+                )
+              }
+            }
+          )
         })
       } else {
         console.log('cars getting error')
