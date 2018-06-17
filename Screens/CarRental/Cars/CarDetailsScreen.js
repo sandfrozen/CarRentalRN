@@ -1,12 +1,5 @@
 import React, { Component } from 'react'
-import {
-  Text,
-  View,
-  Image,
-  ScrollView,
-  ListView,
-  Alert
-} from 'react-native'
+import { Text, View, Image, ScrollView, ListView, Alert } from 'react-native'
 import { ListItem } from 'react-native-elements'
 import styles from '../../styles.js'
 import IosColors from '../../colors.js'
@@ -98,11 +91,34 @@ export default class CarDetailsScreen extends Component {
               backgroundColor: 'white'
             }}
             resizeMode='contain'
-          />
+            />
           : <Text style={styles.listTitle}>
               Loading car...
-          </Text>}
-        <Text style={styles.listTitle}>
+            </Text>}
+        <View
+          backgroundColor='white'
+          style={{
+            marginTop: 2,
+            marginBottom: 16
+          }}
+          pointerEvents={loading ? 'none' : 'auto'}
+        >
+          <ListItem
+            key={'add'}
+            title={'Reserve This Car'}
+            hideChevron
+            titleStyle={{
+              textAlign: 'center',
+              color: IosColors.Blue
+            }}
+            onPress={() => {
+              this.props.navigation.navigate('NewReservation', {
+                id: car.id
+              })
+            }}
+          />
+        </View>
+        <Text style={styles.listTitleSmall}>
           Details:
         </Text>
         <View
@@ -163,28 +179,6 @@ export default class CarDetailsScreen extends Component {
             key={'price'}
             title={car['daycost'].toFixed(2) + '  PLN / day'}
             hideChevron
-          />
-        </View>
-        <View
-          backgroundColor='white'
-          style={{
-            marginVertical: 24
-          }}
-          pointerEvents={loading ? 'none' : 'auto'}
-        >
-          <ListItem
-            key={'add'}
-            title={'Reserve This Car'}
-            hideChevron
-            titleStyle={{
-              textAlign: 'center',
-              color: IosColors.Blue
-            }}
-            onPress={() => {
-              this.props.navigation.navigate('NewReservation', {
-                id: car.id
-              })
-            }}
           />
         </View>
       </ScrollView>

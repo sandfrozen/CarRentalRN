@@ -117,14 +117,13 @@ export default class ReservationDetailsScreen extends Component {
             this.setState(
               {
                 reservation: json.reservation,
-                actual: now > new Date(json.reservation.fromDate) &&
+                actual: new Date(json.reservation.toDate) < now ? true : now > new Date(json.reservation.fromDate) &&
                   now < new Date(json.reservation.toDate)
               },
               () => {
                 this.props.navigation.setParams({ actual: this.state.actual })
               }
             )
-            console.log(json.reservation)
           })
         } else {
           Alert.alert('Connection problem', '', [{ text: 'OK' }], {
@@ -162,12 +161,15 @@ export default class ReservationDetailsScreen extends Component {
       let from = new Date(this.state.reservation.fromDate)
       let to = new Date(this.state.reservation.toDate)
       let actual = this.state.actual
-      let f = from
+      // calculate days, set 00 hours 00 minutes 00 seconds
+      let t = new Date(to.getFullYear(), to.getMonth(), to.getDate())
+      let f = new Date(from.getFullYear(), from.getMonth(), from.getDate())
       let i = 1
-      while (f < to) {
+      while (f < t) {
         i++
         f = new Date(f.getFullYear(), f.getMonth(), f.getDate() + 1)
       }
+      // --------------
       const cost = (car.daycost * i).toFixed(2)
       from =
         from.getDate().toString().padStart(2, '0') +

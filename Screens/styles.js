@@ -122,6 +122,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 1
   },
+  listTitleSmall: {
+    backgroundColor: IosColors.Background,
+    padding: 8,
+    paddingTop: 8,
+    paddingLeft: 12,
+    fontWeight: 'bold',
+    letterSpacing: 1
+  },
   information: {
     backgroundColor: 'white',
     padding: 8,

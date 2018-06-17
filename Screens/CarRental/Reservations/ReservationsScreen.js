@@ -228,8 +228,6 @@ export default class ReservationsScreen extends Component {
                 renderRow={this.renderRow}
                 enableEmptySections
                 style={{ backgroundColor: 'rgb(216, 216, 216)' }}
-                type={'past'}
-                pointerEvents={'none'}
               />
               : null}
           </View>
@@ -251,7 +249,6 @@ export default class ReservationsScreen extends Component {
                 renderRow={this.renderRow}
                 enableEmptySections
                 style={{ backgroundColor: 'rgb(226, 243, 255)' }}
-                type={'actual'}
               />
               : null}
           </View>
@@ -273,7 +270,6 @@ export default class ReservationsScreen extends Component {
                 renderRow={this.renderRow}
                 enableEmptySections
                 style={{ backgroundColor: 'white' }}
-                type={'future'}
               />
               : null}
           </View>
