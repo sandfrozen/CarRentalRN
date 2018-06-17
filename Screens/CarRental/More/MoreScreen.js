@@ -9,14 +9,34 @@ import {
   AsyncStorage
 } from 'react-native'
 import { ListItem } from 'react-native-elements'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import styles from '../../styles.js'
 import IosColors from '../../colors.js'
 import API from '../../API'
 
 export default class MoreScreen extends Component {
+  static navigationOptions = {
+    title: 'More'
+  }
+
   render () {
     return (
       <ScrollView>
+        <View style={{paddingTop: 32}}>
+          <Text style={styles.logoTitle}>
+            CarRental
+          </Text>
+          <Text style={styles.logoSubtitle}>
+            by Tomasz Buslowski
+          </Text>
+          <Ionicons
+            name='ios-car'
+            type='Ionicons'
+            size={100}
+            style={styles.logoIcon}
+            color={IosColors.SuperLightGray}
+          />
+        </View>
         <View
           backgroundColor='white'
           style={{
@@ -54,7 +74,7 @@ export default class MoreScreen extends Component {
         <View
           backgroundColor='white'
           style={{
-            marginTop: 32
+            marginTop: 16
           }}
         >
           <ListItem
@@ -73,7 +93,6 @@ export default class MoreScreen extends Component {
   }
 
   _deleteSignInKeys = async () => {
-    await AsyncStorage.removeItem('id')
     await AsyncStorage.removeItem('ma')
     await AsyncStorage.removeItem('pa')
     await AsyncStorage.removeItem('lk')
@@ -83,7 +102,6 @@ export default class MoreScreen extends Component {
   }
 
   _signOutAsync = async () => {
-    await AsyncStorage.removeItem('id')
     await AsyncStorage.removeItem('lk')
     this.props.navigation.navigate('Auth')
   }
