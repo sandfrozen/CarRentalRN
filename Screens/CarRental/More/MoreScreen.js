@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import {
   Text,
   View,
-  Image,
   ScrollView,
-  ListView,
   Alert,
   AsyncStorage
 } from 'react-native'
@@ -12,7 +10,6 @@ import { ListItem } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import styles from '../../styles.js'
 import IosColors from '../../colors.js'
-import API from '../../API'
 
 export default class MoreScreen extends Component {
   static navigationOptions = {
@@ -53,17 +50,17 @@ export default class MoreScreen extends Component {
               this.props.navigation.navigate('MyAccount')
             }}
           />
-          <ListItem
+          {/* <ListItem
             leftIcon={{ name: 'cancel' }}
             key={'localData'}
             title={'Delete saved data'}
             hideChevron
             titleStyle={{ fontSize: 20 }}
-          />
+          /> */}
           <ListItem
             leftIcon={{ name: 'clear' }}
             key={'signInData'}
-            title={'Clear my Sign in keys'}
+            title={'Clear login keys'}
             hideChevron
             titleStyle={{ fontSize: 20 }}
             onPress={() => {

@@ -4,26 +4,27 @@ import { createBottomTabNavigator } from 'react-navigation'
 import IosColor from '../colors.js'
 import CarsStack from './Cars/CarsStack'
 import ReservationsStack from './Reservations/ReservationsStack'
-import MapScreen from './Map/MapScreen'
+import EmergencyStack from './Emergency/EmergencyStack.js'
 import MoreStack from './More/MoreStack'
 
 export default createBottomTabNavigator(
   {
     Cars: CarsStack,
     Reservations: ReservationsStack,
-    Map: MapScreen,
+    Emergency: EmergencyStack,
     More: MoreStack
   },
   {
     navigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
         const { routeName } = navigation.state
+        console.log(routeName)
         let iconName
         if (routeName === 'Cars') {
           iconName = `ios-car${focused ? '' : '-outline'}`
         } else if (routeName === 'Reservations') {
           iconName = `ios-list-box${focused ? '' : '-outline'}`
-        } else if (routeName === 'Map') {
+        } else if (routeName === 'Emergency') {
           iconName = `ios-navigate${focused ? '' : '-outline'}`
         } else if (routeName === 'More') {
           iconName = `ios-more${focused ? '' : '-outline'}`

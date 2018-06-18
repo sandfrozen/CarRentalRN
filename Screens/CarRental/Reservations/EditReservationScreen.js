@@ -536,7 +536,7 @@ export default class EditReservationScreen extends Component {
               ? ''
               : <Text style={styles.informationActual}>
                   ACTUAL
-                </Text>}
+              </Text>}
             <Text style={styles.informationChoosed}>
               CHOOSED
             </Text>
