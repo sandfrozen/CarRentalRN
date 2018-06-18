@@ -56,6 +56,17 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16
   },
+  input2: {
+    borderWidth: 1,
+    borderRadius: 6,
+    width: '100%',
+    height: 80,
+    borderColor: IosColors.SuperLightGray,
+    textAlign: 'left',
+    fontSize: 18,
+    textAlignVertical: 'center',
+    backgroundColor: 'white'
+  },
   input50: {
     borderWidth: 1,
     borderRadius: 6,
@@ -78,7 +89,8 @@ const styles = StyleSheet.create({
   divider: {
     color: IosColors.LightGray,
     letterSpacing: 2,
-    fontStyle: 'italic'
+    fontStyle: 'italic',
+    textAlign: 'center'
   },
   logoIcon: {
     textAlign: 'center'
@@ -153,6 +165,13 @@ const styles = StyleSheet.create({
     padding: 8,
     paddingTop: 24,
     paddingLeft: 12,
+    fontWeight: 'bold',
+    letterSpacing: 1
+  },
+  listTitle2: {
+    backgroundColor: IosColors.Background,
+    padding: 8,
+    paddingLeft: 0,
     fontWeight: 'bold',
     letterSpacing: 1
   },

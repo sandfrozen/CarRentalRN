@@ -8,7 +8,8 @@ import {
   TextInput,
   ScrollView,
   KeyboardAvoidingView,
-  ActivityIndicator
+  ActivityIndicator,
+  Keyboard
 } from 'react-native'
 import styles from '../styles.js'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -81,14 +82,14 @@ class SignInScreen extends React.Component {
               <ActivityIndicator
                 size='large'
                 style={styles.activityIndicator}
-                />
+              />
               <Button
                 title='stop'
                 onPress={() => {
                   this.setState({ loading: false })
                 }}
                 style={styles.button}
-                />
+              />
             </View>
             : <View style={[styles.viewInView]}>
               <TextInput
@@ -109,7 +110,7 @@ class SignInScreen extends React.Component {
                 onSubmitEditing={() => {
                   this.focusNextField('2')
                 }}
-                />
+              />
               <TextInput
                 style={styles.input}
                 placeholder='password'
@@ -126,21 +127,22 @@ class SignInScreen extends React.Component {
                 }}
                 onSubmitEditing={() => {
                   this._signInAsync()
+                  Keyboard.dismiss()
                 }}
-                />
+              />
               <Button
                 title='Sign in!'
                 onPress={this._signInAsync}
                 style={styles.button}
-                />
+              />
               <Text style={styles.divider}>
                   -  or  -
-                </Text>
+              </Text>
               <Button
                 title='Sign up!'
                 onPress={this._signUpAsync}
                 style={styles.button}
-                />
+              />
             </View>}
         </KeyboardAvoidingView>
       </ScrollView>

@@ -18,7 +18,6 @@ export default createBottomTabNavigator(
     navigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
         const { routeName } = navigation.state
-        console.log(routeName)
         let iconName
         if (routeName === 'Cars') {
           iconName = `ios-car${focused ? '' : '-outline'}`

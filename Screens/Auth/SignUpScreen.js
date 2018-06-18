@@ -6,7 +6,8 @@ import {
   Text,
   ScrollView,
   KeyboardAvoidingView,
-  TextInput
+  TextInput,
+  Keyboard
 } from 'react-native'
 import styles from '../styles.js'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -120,6 +121,7 @@ export default class SignUpScreen extends React.Component {
               this.inputs['4'] = input
             }}
             onSubmitEditing={() => {
+              Keyboard.dismiss()
               this._signUpAsync()
             }}
           />
