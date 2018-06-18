@@ -86,7 +86,7 @@ export default class EmergencyScreen extends Component {
           this.setState({ address })
           console.log(address)
         })
-        .catch(error => console.warn(error))
+        .catch(error => console.log(error))
     })
   }
 
@@ -110,7 +110,7 @@ export default class EmergencyScreen extends Component {
           this.setState(
             {
               reservationsActual: res,
-              selectedReservationId: res[0].id
+              selectedReservationId: res.length > 0 ? res[0].id : 'none'
             },
             () => {
               this.setReservationsArray()
@@ -186,9 +186,9 @@ export default class EmergencyScreen extends Component {
           const message = this.state.selectedProblemId === '3'
             ? this.state.otherProblem
             : (this.state.selectedProblemId === 'none'
-              ? 'no problem choosed'
-              : this.state.problemsArray[this.state.selectedProblemId].label)
-
+                ? 'no problem choosed'
+                : this.state.problemsArray[this.state.selectedProblemId].label)
+          console.log('bfore send: ' + this.state.selectedReservationId)
           fetch(API.URL + '/emergencies', {
             method: 'POST',
             headers: {
@@ -249,10 +249,11 @@ export default class EmergencyScreen extends Component {
   }
 
   render () {
-    const isReservation = this.state.reservationsActual !== undefined
+    const isReservation = this.state.reservationsActual === undefined
+      ? false
+      : this.state.reservationsActual.length > 0
     const status = this.state.status
     const isOther = this.state.selectedProblemId === '3'
-    const isToSend = this.state.selectedProblemId !== 'none'
 
     if (status === 'none') {
       return (
@@ -267,6 +268,12 @@ export default class EmergencyScreen extends Component {
             onPress={() => {
               this.setState({ status: 'reporting' })
               this._setLocalization()
+            }}
+          />
+          <Button
+            title={'Refresh'}
+            onPress={() => {
+              this._getActualReservationsAsync()
             }}
           />
         </View>

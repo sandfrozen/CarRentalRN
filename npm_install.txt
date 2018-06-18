@@ -23,4 +23,4 @@ npm install --save react-native-calendars
 
 npm install react-native-picker-select
 
-npm install react-native-maps --save
+//npm install react-native-maps --save
