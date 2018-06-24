@@ -149,7 +149,7 @@ export default class ReservationsScreen extends Component {
     return (
       <ListItem
         avatar={rowData.car.imageurl}
-        title={rowData.car.brand + ' ' + rowData.car.model + ' ' + rowData.id}
+        title={'ID: ' + rowData.id + ' • ' + rowData.car.brand + ' ' + rowData.car.model}
         subtitle={date}
         rightIcon={{ name: 'chevron-right' }}
         onPress={() => {
